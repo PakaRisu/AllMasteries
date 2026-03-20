@@ -765,6 +765,168 @@
     }
     .role-btn.active .role-count { color: var(--c-gold-dark); }
 
+  
+    /* ══════════════════════════════════════════════════════
+       OPTIONS BUTTON & MODAL
+    ══════════════════════════════════════════════════════ */
+    .options-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      border: 1px solid var(--c-border);
+      color: var(--c-text-dim);
+      padding: 5px 12px;
+      font-family: var(--font-title);
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all .2s;
+      clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 7px, 100% 100%, 7px 100%, 0 calc(100% - 7px));
+      margin-top: 12px;
+    }
+    .options-btn:hover {
+      border-color: var(--c-gold-dark);
+      color: var(--c-gold);
+    }
+    .options-btn svg {
+      width: 12px; height: 12px;
+      fill: currentColor;
+      transition: transform .4s;
+    }
+    .options-btn:hover svg { transform: rotate(60deg); }
+
+    /* Modal overlay */
+    #opt-overlay {
+      position: fixed; inset: 0;
+      background: rgba(1,10,19,.75);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    #opt-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    #opt-modal {
+      background: linear-gradient(160deg, #0d1b2e 0%, #091020 100%);
+      border: 1px solid var(--c-gold-dark);
+      max-width: 540px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      position: relative;
+      clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+      transform: scale(.95);
+      transition: transform .25s;
+    }
+    #opt-overlay.open #opt-modal { transform: scale(1); }
+
+    #opt-modal::-webkit-scrollbar { width: 4px; }
+    #opt-modal::-webkit-scrollbar-track { background: transparent; }
+    #opt-modal::-webkit-scrollbar-thumb { background: var(--c-border); }
+
+    .opt-header {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--c-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .opt-title {
+      font-family: var(--font-title);
+      font-size: 0.85rem;
+      letter-spacing: 0.15em;
+      color: var(--c-gold-light);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .opt-title svg { width: 16px; height: 16px; fill: var(--c-gold-dark); }
+    .opt-close {
+      background: none;
+      border: 1px solid var(--c-border);
+      color: var(--c-text-dim);
+      width: 26px; height: 26px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .15s;
+    }
+    .opt-close:hover { border-color: var(--c-gold-dark); color: var(--c-gold); }
+
+    .opt-body { padding: 20px 24px 24px; }
+
+    .opt-section {
+      margin-bottom: 24px;
+    }
+    .opt-section:last-child { margin-bottom: 0; }
+    .opt-section-title {
+      font-family: var(--font-title);
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      color: var(--c-gold-dark);
+      text-transform: uppercase;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--c-border);
+      margin-bottom: 12px;
+    }
+    .opt-section p {
+      font-size: 0.82rem;
+      line-height: 1.7;
+      color: var(--c-text);
+      margin-bottom: 8px;
+    }
+    .opt-section p:last-child { margin-bottom: 0; }
+    .opt-section a {
+      color: var(--c-gold-dark);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(120,90,40,.3);
+      transition: color .15s, border-color .15s;
+    }
+    .opt-section a:hover { color: var(--c-gold); border-color: var(--c-gold-dark); }
+    .opt-notice {
+      font-size: 0.72rem;
+      color: var(--c-text-dim);
+      font-style: italic;
+      line-height: 1.6;
+    }
+    .opt-tag {
+      display: inline-block;
+      background: rgba(200,170,110,.08);
+      border: 1px solid var(--c-gold-dark);
+      color: var(--c-gold);
+      font-family: var(--font-title);
+      font-size: 0.55rem;
+      letter-spacing: 0.1em;
+      padding: 2px 8px;
+      margin: 2px 2px;
+      vertical-align: middle;
+    }
+    .opt-contact {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      font-size: 0.82rem;
+    }
+    .opt-contact a { font-size: 0.82rem; }
+    .opt-champs-count {
+      font-family: var(--font-title);
+      font-size: 0.9rem;
+      color: var(--c-gold);
+      letter-spacing: 0.05em;
+    }
+
   </style>
 </head>
 <body>
@@ -917,12 +1079,100 @@
 
 <!-- ═══════════════════════ FOOTER ═══════════════════════ -->
 <footer>
-  Mastery Forge n'est pas approuvé par Riot Games.
-  Riot Games et toutes les propriétés associées sont des marques déposées de Riot Games, Inc. —
-  <a href="https://lolcompatibility.com">lolcompatibility.com</a> · PakaRisu
+  <div>
+    Masteries Check n'est pas approuvé par Riot Games et ne reflète pas les points de vue de Riot Games, Inc. —
+    <a href="https://lolcompatibility.com" target="_blank">lolcompatibility.com</a> · PakaRisu
+  </div>
+  <button class="options-btn" onclick="openOptions()">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.92c.04-.34.07-.68.07-1.08s-.03-.74-.07-1.08l2.32-1.81c.21-.16.27-.45.13-.69l-2.2-3.8c-.13-.24-.42-.32-.66-.24l-2.74 1.1c-.57-.44-1.18-.8-1.86-1.08l-.42-2.9A.488.488 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.42 2.9c-.68.28-1.29.64-1.86 1.08L4.49 5.3c-.25-.08-.54 0-.67.24l-2.2 3.8c-.13.24-.07.53.13.69l2.33 1.81C4.03 11.26 4 11.6 4 12s.03.74.07 1.08L1.75 14.9c-.21.16-.27.45-.13.69l2.2 3.8c.13.24.42.32.66.24l2.74-1.1c.57.44 1.18.8 1.86 1.08l.42 2.9c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.42-2.9c.68-.28 1.29-.64 1.86-1.08l2.74 1.1c.25.08.54 0 .67-.24l2.2-3.8c.13-.24.07-.53-.13-.69l-2.32-1.81z"/>
+    </svg>
+    ⚙ Options
+  </button>
 </footer>
 
-<script>
+<!-- ═══════════════════════ OPTIONS MODAL ═══════════════════════ -->
+<div id="opt-overlay" onclick="handleOptOverlayClick(event)">
+  <div id="opt-modal">
+    <div class="opt-header">
+      <div class="opt-title">
+        <svg viewBox="0 0 24 24"><path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.92c.04-.34.07-.68.07-1.08s-.03-.74-.07-1.08l2.32-1.81c.21-.16.27-.45.13-.69l-2.2-3.8c-.13-.24-.42-.32-.66-.24l-2.74 1.1c-.57-.44-1.18-.8-1.86-1.08l-.42-2.9A.488.488 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.42 2.9c-.68.28-1.29.64-1.86 1.08L4.49 5.3c-.25-.08-.54 0-.67.24l-2.2 3.8c-.13.24-.07.53.13.69l2.33 1.81C4.03 11.26 4 11.6 4 12s.03.74.07 1.08L1.75 14.9c-.21.16-.27.45-.13.69l2.2 3.8c.13.24.42.32.66.24l2.74-1.1c.57.44 1.18.8 1.86 1.08l.42 2.9c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.42-2.9c.68-.28 1.29-.64 1.86-1.08l2.74 1.1c.25.08.54 0 .67-.24l2.2-3.8c.13-.24.07-.53-.13-.69l-2.32-1.81z"/></svg>
+        Options
+      </div>
+      <button class="opt-close" onclick="closeOptions()">✕</button>
+    </div>
+
+    <div class="opt-body">
+
+      <!-- Mentions légales -->
+      <div class="opt-section">
+        <div class="opt-section-title">📜 Mentions légales</div>
+        <p>
+          <strong>Masteries Check</strong> est une application tierce non officielle, créée par un fan de League of Legends.
+          Elle n'est pas approuvée par Riot Games et ne reflète pas les points de vue ou opinions de Riot Games
+          ou de quiconque impliqué officiellement dans la production ou la gestion des propriétés de Riot Games.
+        </p>
+        <p>
+          Riot Games, League of Legends, et toutes les propriétés associées sont des marques déposées
+          de <a href="https://www.riotgames.com" target="_blank">Riot Games, Inc.</a>
+        </p>
+        <p>
+          Cette application utilise l'API officielle Riot Games conformément aux
+          <a href="https://developer.riotgames.com/policies/general" target="_blank">conditions d'utilisation de l'API Riot Games</a>.
+          Les données de maîtrise, icônes et assets de champions sont fournis via
+          <a href="https://developer.riotgames.com/docs/lol#data-dragon" target="_blank">Data Dragon</a> et
+          <a href="https://communitydragon.org" target="_blank">Community Dragon</a>.
+        </p>
+        <p class="opt-notice">
+          Masteries Check ne stocke aucune donnée personnelle. Les requêtes sont effectuées en temps réel
+          via l'API Riot Games et ne sont pas conservées côté serveur.
+        </p>
+      </div>
+
+      <!-- Endpoints utilisés -->
+      <div class="opt-section">
+        <div class="opt-section-title">🔌 API utilisées</div>
+        <p>Cette application utilise les endpoints Riot Games suivants :</p>
+        <p>
+          <span class="opt-tag">ACCOUNT-V1</span> Résolution du Riot ID → PUUID<br/>
+          <span class="opt-tag">SUMMONER-V4</span> Icône de profil et niveau d'invocateur<br/>
+          <span class="opt-tag">CHAMPION-MASTERY-V4</span> Maîtrises de champion par PUUID<br/>
+          <span class="opt-tag">DATA DRAGON</span> Données statiques des champions (noms, images, version)<br/>
+          <span class="opt-tag">COMMUNITY DRAGON</span> Icônes de positions (Top, Jungle, Mid, Bot, Support)
+        </p>
+      </div>
+
+      <!-- Champions en jeu -->
+      <div class="opt-section">
+        <div class="opt-section-title">🎯 Champions dans le jeu</div>
+        <p>
+          Le nombre de champions est récupéré dynamiquement depuis la dernière version de Data Dragon au chargement de la page.
+          Aucune valeur n'est codée en dur.
+        </p>
+        <p>
+          Version DDragon détectée : <span class="opt-champs-count" id="opt-dd-version">—</span>
+          &nbsp;·&nbsp; Champions : <span class="opt-champs-count" id="opt-champ-count">—</span>
+        </p>
+      </div>
+
+      <!-- Contact -->
+      <div class="opt-section">
+        <div class="opt-section-title">✉ Contact</div>
+        <div class="opt-contact">
+          <span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c1adaeadefa2aeacb1a0b5a8a3a8ada8b5b881a6aca0a8adefa2aeac">[email&#160;protected]</a></span>
+        </div>
+        <div class="opt-contact" style="margin-top:4px;">
+          <span>— PakaRisu &nbsp;·&nbsp;
+            <a href="https://lolcompatibility.com" target="_blank">lolcompatibility.com</a>
+          </span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 /* ═══════════════════════════════════════════════════════════════
    CONFIG & STATE
 ═══════════════════════════════════════════════════════════════ */
@@ -1127,7 +1377,7 @@ function renderGrid() {
       <div class="champ-info">
         <div class="champ-name">${escHtml(d.name)}</div>
         <div class="champ-pts${d.points === 0 ? ' zero' : ''}">${ptsDisplay}</div>
-        <div class="champ-level-label" style="color:${lvlColor}">
+        <div class="champ-level-label" style="color:${getLevelTextColor(lvl)}">
           ${lvl > 0 ? 'Niveau ' + lvl : 'Non joué'}
         </div>
       </div>
@@ -1349,10 +1599,18 @@ function getLevelColor(lvl) {
   if (lvl === 8)  return '#c0392b';   // Rouge (Mastery 8)
   if (lvl === 9)  return '#c89b3c';   // Or vif (Mastery 9)
   if (lvl === 10) return '#f0e6d3';   // Platine (Mastery 10)
-  // Niveaux > 10 : dégradé bleu-blanc de plus en plus brillant
   const extra = Math.min(lvl - 10, 20);
   const g = Math.round(200 + extra * 2.5);
   return `rgb(180,${g},255)`;
+}
+
+// Couleur lisible du TEXTE du label — version éclaircie pour les niveaux sombres
+function getLevelTextColor(lvl) {
+  if (lvl === 0)  return '#6e6e80';   // Non joué — gris clair
+  if (lvl <= 2)   return '#9a8060';   // Bronze éclairci
+  if (lvl <= 4)   return '#b8c8d8';   // Argent clair
+  // Niveaux 5+ : la couleur de bordure est déjà suffisamment lumineuse
+  return getLevelColor(lvl);
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1579,8 +1837,34 @@ function renderEternals(el, eternals, color) {
   `;
 }
 
-// Fermer sidebar avec Escape
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
+
+/* ═══════════════════════════════════════════════════════════════
+   OPTIONS MODAL
+═══════════════════════════════════════════════════════════════ */
+function openOptions() {
+  document.getElementById('opt-overlay').classList.add('open');
+  // Afficher version DDragon et nombre de champs si dispo
+  if (ddVersion) {
+    document.getElementById('opt-dd-version').textContent = ddVersion;
+  }
+  const count = Object.keys(champMap).length;
+  if (count > 0) {
+    document.getElementById('opt-champ-count').textContent = count;
+  }
+}
+
+function closeOptions() {
+  document.getElementById('opt-overlay').classList.remove('open');
+}
+
+function handleOptOverlayClick(e) {
+  if (e.target === document.getElementById('opt-overlay')) closeOptions();
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeOptions(); closeSidebar(); }
+});
+
 
 </script>
 
@@ -1592,14 +1876,4 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar
     <img class="sb-champ-img" id="sb-img" src="" alt=""/>
     <div class="sb-champ-title">
       <div class="sb-champ-name" id="sb-name">—</div>
-      <div class="sb-level-badge" id="sb-level-badge">—</div>
-      <div class="sb-last-played" id="sb-last-played"></div>
-    </div>
-  </div>
-  <div class="sb-body" id="sb-body">
-    <!-- Contenu injecté par JS -->
-  </div>
-</div>
-
-</body>
-</html>
+      <div cla
