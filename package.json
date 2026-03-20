@@ -1,5 +1,8 @@
 {
-  "name": "mastery-forge",
+  "name": "allmasteries",
   "version": "1.0.0",
-  "private": true
+  "private": true,
+  "engines": {
+    "node": "20.x"
+  }
 }
