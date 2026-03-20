@@ -1,7 +1,7 @@
 // api/mastery.js — Vercel Serverless Function
-// Requires env variable: RIOT_API_KEY
+// Variable d'environnement requise : RIOT_API_KEY
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -24,48 +24,50 @@ export default async function handler(req, res) {
     kr: "asia", jp1: "asia",
     oc1: "sea", sg2: "sea", tw2: "sea", vn2: "sea", ph2: "sea",
   };
-  const routing = routingMap[region.toLowerCase()] ?? "europe";
+  const routing = routingMap[region.toLowerCase()] || "europe";
   const regionLower = region.toLowerCase();
   const headers = { "X-Riot-Token": API_KEY, "Accept": "application/json" };
 
   try {
     // 1. PUUID via Riot Account API
     const accountUrl =
-      `https://${routing}.api.riotgames.com/riot/account/v1/accounts/by-riot-id/` +
-      `${encodeURIComponent(gameName)}/${encodeURIComponent(tagLine)}`;
+      "https://" + routing + ".api.riotgames.com/riot/account/v1/accounts/by-riot-id/" +
+      encodeURIComponent(gameName) + "/" + encodeURIComponent(tagLine);
 
     const accountRes = await fetch(accountUrl, { headers });
     if (!accountRes.ok) {
-      let msg = `Erreur API Riot (compte) : ${accountRes.status}`;
-      try { const j = await accountRes.json(); if (j?.status?.message) msg = j.status.message; } catch {}
+      let msg = "Erreur API Riot (compte) : " + accountRes.status;
+      try { const j = await accountRes.json(); if (j && j.status && j.status.message) msg = j.status.message; } catch (_) {}
       return res.status(accountRes.status).json({ error: msg });
     }
     const account = await accountRes.json();
-    const { puuid, gameName: riotName, tagLine: riotTag } = account;
+    const puuid = account.puuid;
+    const riotName = account.gameName;
+    const riotTag = account.tagLine;
 
     // 2. Profile icon via Summoner API
     let profileIconId = 1;
     let summonerLevel = 0;
     try {
       const sumRes = await fetch(
-        `https://${regionLower}.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/${puuid}`,
+        "https://" + regionLower + ".api.riotgames.com/lol/summoner/v4/summoners/by-puuid/" + puuid,
         { headers }
       );
       if (sumRes.ok) {
         const sum = await sumRes.json();
-        profileIconId = sum.profileIconId ?? 1;
-        summonerLevel = sum.summonerLevel ?? 0;
+        profileIconId = sum.profileIconId || 1;
+        summonerLevel = sum.summonerLevel || 0;
       }
-    } catch {}
+    } catch (_) {}
 
-    // 3. All champion masteries
+    // 3. Toutes les masteries
     const masteryRes = await fetch(
-      `https://${regionLower}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/${puuid}`,
+      "https://" + regionLower + ".api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/" + puuid,
       { headers }
     );
     if (!masteryRes.ok) {
-      let msg = `Erreur API Riot (mastery) : ${masteryRes.status}`;
-      try { const j = await masteryRes.json(); if (j?.status?.message) msg = j.status.message; } catch {}
+      let msg = "Erreur API Riot (mastery) : " + masteryRes.status;
+      try { const j = await masteryRes.json(); if (j && j.status && j.status.message) msg = j.status.message; } catch (_) {}
       return res.status(masteryRes.status).json({ error: msg });
     }
     const masteries = await masteryRes.json();
@@ -74,6 +76,6 @@ export default async function handler(req, res) {
 
   } catch (e) {
     console.error("mastery handler error:", e);
-    return res.status(500).json({ error: `Erreur serveur : ${e.message}` });
+    return res.status(500).json({ error: "Erreur serveur : " + e.message });
   }
-}
+};
