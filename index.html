@@ -3,379 +3,555 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LoL Mastery Tracker</title>
+  <title>Mastery Forge — Champion Mastery Tracker</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Beaufort+for+LOL:wght@400;700&family=Spiegel:wght@400;600&display=swap" rel="stylesheet"/>
+  <!-- Fallback fonts if Beaufort isn't available publicly -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet"/>
   <style>
+    /* ══════════════════════════════════════════════════════
+       VARIABLES & RESET
+    ══════════════════════════════════════════════════════ */
     :root {
-      --gold:      #c89b3c;
-      --gold-light:#f0d875;
-      --gold-dim:  #7a5c1e;
-      --obsidian:  #0a0a0f;
-      --dark:      #0d0d14;
-      --panel:     #13131e;
-      --panel2:    #1a1a28;
-      --border:    #2a2a3e;
-      --text:      #ccc5b0;
-      --text-dim:  #6b6555;
-      --blue:      #4fc3f7;
-      --red:       #ef5350;
-      --green:     #66bb6a;
+      --c-gold:        #c8aa6e;
+      --c-gold-light:  #f0e6d3;
+      --c-gold-dark:   #785a28;
+      --c-gold-glow:   rgba(200,170,110,.35);
+      --c-bg:          #010a13;
+      --c-bg2:         #0a1628;
+      --c-bg3:         #091428;
+      --c-panel:       #0d1b2e;
+      --c-panel2:      #112233;
+      --c-border:      #1e3048;
+      --c-border2:     #785a28;
+      --c-text:        #a9b4c0;
+      --c-text-dim:    #5b6a7a;
+      --c-blue:        #0ac8b9;
+      --c-blue2:       #00b4d8;
+      --c-hex:         #c8aa6e;
+      --font-title:    'Cinzel', 'BeaufortforLOL', serif;
+      --font-body:     'Source Sans 3', 'Spiegel', sans-serif;
+      --radius:        2px;
     }
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+    html { scroll-behavior: smooth; }
     body {
-      background: var(--obsidian);
-      color: var(--text);
-      font-family: 'Crimson Pro', Georgia, serif;
-      font-size: 16px;
+      background: var(--c-bg);
+      color: var(--c-text);
+      font-family: var(--font-body);
+      font-size: 15px;
       min-height: 100vh;
-      overflow-x: hidden;
+      background-image:
+        radial-gradient(ellipse 80% 40% at 50% -10%, rgba(10,30,60,.8) 0%, transparent 70%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='104'%3E%3Cpath fill='none' stroke='%231e3048' stroke-width='.5' d='M30 0 L60 17.3 L60 52 L30 69.3 L0 52 L0 17.3 Z M30 34.6 L60 52 M30 34.6 L0 52 M30 34.6 L30 69.3'/%3E%3C/svg%3E");
+      background-size: auto, 60px 104px;
     }
 
-    /* ── Noise overlay ── */
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none; z-index: 9999;
-    }
-
-    /* ── Header ── */
+    /* ══════════════════════════════════════════════════════
+       HEADER
+    ══════════════════════════════════════════════════════ */
     header {
       text-align: center;
-      padding: 48px 24px 32px;
-      border-bottom: 1px solid var(--border);
+      padding: 40px 24px 28px;
       position: relative;
-      background: linear-gradient(180deg, #0f0f1a 0%, transparent 100%);
     }
     header::after {
       content: '';
-      position: absolute; bottom: -1px; left: 50%; transform: translateX(-50%);
-      width: 200px; height: 1px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      position: absolute;
+      bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 60%; max-width: 600px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--c-gold-dark), var(--c-gold), var(--c-gold-dark), transparent);
     }
-    .logo-line {
-      display: flex; align-items: center; justify-content: center; gap: 16px;
-      margin-bottom: 8px;
-    }
-    .logo-diamond {
-      width: 10px; height: 10px;
-      background: var(--gold);
-      transform: rotate(45deg);
-      flex-shrink: 0;
+    .header-eyebrow {
+      font-family: var(--font-title);
+      font-size: 0.6rem;
+      letter-spacing: 0.25em;
+      color: var(--c-gold-dark);
+      text-transform: uppercase;
+      margin-bottom: 10px;
     }
     h1 {
-      font-family: 'Cinzel', serif;
-      font-size: clamp(1.6rem, 4vw, 2.8rem);
+      font-family: var(--font-title);
+      font-size: clamp(1.8rem, 5vw, 3rem);
       font-weight: 900;
-      color: var(--gold-light);
-      letter-spacing: 0.12em;
-      text-shadow: 0 0 40px rgba(200,155,60,0.4);
-    }
-    .subtitle {
-      font-size: 0.95rem;
-      color: var(--text-dim);
-      letter-spacing: 0.08em;
+      color: var(--c-gold-light);
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      font-weight: 300;
+      text-shadow: 0 0 60px var(--c-gold-glow), 0 2px 4px rgba(0,0,0,.8);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .header-sub {
+      font-size: 0.85rem;
+      color: var(--c-text-dim);
+      letter-spacing: 0.08em;
     }
 
-    /* ── Search form ── */
-    .search-wrap {
-      max-width: 680px;
-      margin: 36px auto 0;
-      padding: 0 20px;
+    /* ══════════════════════════════════════════════════════
+       SEARCH CARD
+    ══════════════════════════════════════════════════════ */
+    .search-section {
+      max-width: 560px;
+      margin: 32px auto 0;
+      padding: 0 16px;
     }
-    .search-grid {
+    .search-card {
+      background: linear-gradient(135deg, var(--c-panel) 0%, var(--c-bg2) 100%);
+      border: 1px solid var(--c-border);
+      border-top: 1px solid var(--c-gold-dark);
+      padding: 28px 28px 24px;
+      position: relative;
+      clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
+    }
+    /* Corner ornaments */
+    .search-card::before, .search-card::after {
+      content: '';
+      position: absolute;
+      width: 8px; height: 8px;
+      border-color: var(--c-gold-dark);
+      border-style: solid;
+    }
+    .search-card::before { top: 6px; left: 6px; border-width: 1px 0 0 1px; }
+    .search-card::after  { bottom: 6px; right: 6px; border-width: 0 1px 1px 0; }
+
+    /* Summoner preview row */
+    .summoner-preview {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .hex-icon {
+      position: relative;
+      flex-shrink: 0;
+      width: 64px;
+      height: 64px;
+    }
+    .hex-icon svg {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+    }
+    .hex-icon img {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .hex-level {
+      position: absolute;
+      bottom: -2px; left: 50%; transform: translateX(-50%);
+      background: var(--c-bg);
+      border: 1px solid var(--c-gold-dark);
+      color: var(--c-gold);
+      font-family: var(--font-title);
+      font-size: 0.55rem;
+      padding: 1px 5px;
+      white-space: nowrap;
+    }
+    .summoner-info {
+      flex: 1;
+    }
+    .summoner-name {
+      font-family: var(--font-title);
+      font-size: 1.1rem;
+      color: var(--c-gold-light);
+      letter-spacing: 0.05em;
+    }
+    .summoner-tag {
+      color: var(--c-gold-dark);
+      font-size: 0.85rem;
+    }
+    .summoner-region-badge {
+      display: inline-block;
+      background: rgba(200,170,110,.1);
+      border: 1px solid var(--c-gold-dark);
+      color: var(--c-gold);
+      font-family: var(--font-title);
+      font-size: 0.55rem;
+      letter-spacing: 0.1em;
+      padding: 2px 7px;
+      margin-top: 4px;
+    }
+    .summoner-placeholder {
+      color: var(--c-text-dim);
+      font-size: 0.85rem;
+      font-style: italic;
+    }
+
+    /* Form fields */
+    .fields-row {
       display: grid;
-      grid-template-columns: 1fr auto auto auto;
+      grid-template-columns: 1fr auto;
       gap: 8px;
-      align-items: end;
+      margin-bottom: 8px;
     }
-    .field {
+    .tag-region-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .field-group {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 5px;
     }
-    label {
-      font-family: 'Cinzel', serif;
-      font-size: 0.65rem;
-      letter-spacing: 0.12em;
-      color: var(--gold-dim);
+    .field-label {
+      font-family: var(--font-title);
+      font-size: 0.58rem;
+      letter-spacing: 0.15em;
+      color: var(--c-gold-dark);
       text-transform: uppercase;
     }
     input, select {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 10px 14px;
-      font-family: 'Crimson Pro', serif;
-      font-size: 1rem;
-      border-radius: 2px;
+      background: rgba(1,10,19,.6);
+      border: 1px solid var(--c-border);
+      border-bottom-color: var(--c-gold-dark);
+      color: var(--c-gold-light);
+      padding: 9px 12px;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
       outline: none;
       transition: border-color .2s, box-shadow .2s;
       width: 100%;
+      border-radius: 0;
     }
-    input::placeholder { color: var(--text-dim); }
+    input::placeholder { color: var(--c-text-dim); font-style: italic; }
     input:focus, select:focus {
-      border-color: var(--gold-dim);
-      box-shadow: 0 0 0 2px rgba(200,155,60,.12);
+      border-color: var(--c-gold-dark);
+      border-bottom-color: var(--c-gold);
+      box-shadow: 0 2px 0 -1px var(--c-gold), inset 0 0 20px rgba(200,170,110,.04);
     }
-    select option { background: var(--panel2); }
+    select option { background: var(--c-panel); color: var(--c-text); }
 
     .btn-search {
-      background: linear-gradient(135deg, #b8860b, #c89b3c);
-      color: #0a0a0f;
-      border: none;
-      padding: 10px 22px;
-      font-family: 'Cinzel', serif;
-      font-size: 0.8rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
+      width: 100%;
+      padding: 11px 20px;
+      background: linear-gradient(180deg, #1e3a5f 0%, #0d1b2e 100%);
+      border: 1px solid var(--c-gold-dark);
+      color: var(--c-gold-light);
+      font-family: var(--font-title);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
       cursor: pointer;
-      border-radius: 2px;
-      white-space: nowrap;
-      height: 42px;
-      transition: filter .2s, transform .1s;
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+      transition: background .2s, color .2s;
     }
-    .btn-search:hover { filter: brightness(1.15); }
-    .btn-search:active { transform: scale(.97); }
+    .btn-search:hover {
+      background: linear-gradient(180deg, #2a4d7a 0%, #1a2e4a 100%);
+      color: var(--c-gold);
+    }
     .btn-search:disabled { opacity: .5; cursor: not-allowed; }
 
-    /* ── Filters bar ── */
-    #filters {
-      max-width: 1200px;
-      margin: 28px auto 0;
-      padding: 0 20px;
+    /* ══════════════════════════════════════════════════════
+       ERROR / STATUS
+    ══════════════════════════════════════════════════════ */
+    .error-bar {
+      max-width: 560px;
+      margin: 14px auto 0;
+      padding: 0 16px;
       display: none;
     }
-    .filters-inner {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      padding: 14px 18px;
+    .error-inner {
+      background: rgba(200,40,40,.08);
+      border: 1px solid rgba(200,40,40,.3);
+      border-left: 3px solid #c83232;
+      padding: 10px 14px;
+      font-size: 0.88rem;
+      color: #e07070;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       FILTERS / CONTROLS BAR
+    ══════════════════════════════════════════════════════ */
+    #controls {
+      max-width: 1240px;
+      margin: 28px auto 0;
+      padding: 0 16px;
+      display: none;
+    }
+    .controls-inner {
+      background: var(--c-panel);
+      border: 1px solid var(--c-border);
+      border-top: 1px solid var(--c-gold-dark);
+      padding: 12px 16px;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
-    .filter-label {
-      font-family: 'Cinzel', serif;
-      font-size: 0.65rem;
-      letter-spacing: 0.1em;
-      color: var(--gold-dim);
+    .ctrl-label {
+      font-family: var(--font-title);
+      font-size: 0.58rem;
+      letter-spacing: 0.12em;
+      color: var(--c-gold-dark);
       text-transform: uppercase;
-      white-space: nowrap;
     }
     .filter-btn {
       background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text-dim);
-      padding: 5px 12px;
-      font-family: 'Cinzel', serif;
-      font-size: 0.65rem;
+      border: 1px solid var(--c-border);
+      color: var(--c-text-dim);
+      padding: 4px 12px;
+      font-family: var(--font-title);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all .15s;
+      clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+    }
+    .filter-btn:hover { border-color: var(--c-gold-dark); color: var(--c-gold); }
+    .filter-btn.active {
+      background: rgba(200,170,110,.12);
+      border-color: var(--c-gold-dark);
+      color: var(--c-gold-light);
+    }
+    .ctrl-sep { width: 1px; height: 20px; background: var(--c-border); flex-shrink: 0; }
+    .sort-sel {
+      background: transparent;
+      border: 1px solid var(--c-border);
+      color: var(--c-text);
+      padding: 4px 10px;
+      font-family: var(--font-title);
+      font-size: 0.6rem;
       letter-spacing: 0.08em;
       cursor: pointer;
-      border-radius: 2px;
-      transition: all .2s;
     }
-    .filter-btn:hover { border-color: var(--gold-dim); color: var(--gold); }
-    .filter-btn.active {
-      background: rgba(200,155,60,.15);
-      border-color: var(--gold);
-      color: var(--gold-light);
-    }
-    .divider-v { width: 1px; height: 24px; background: var(--border); }
-    .sort-select {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 5px 10px;
-      font-family: 'Cinzel', serif;
-      font-size: 0.65rem;
-      letter-spacing: 0.06em;
-      cursor: pointer;
-      border-radius: 2px;
-    }
-    .stats-text {
+    .sort-sel option { background: var(--c-panel); }
+    .ctrl-stats {
       margin-left: auto;
-      font-size: 0.85rem;
-      color: var(--text-dim);
+      font-size: 0.82rem;
+      color: var(--c-text-dim);
     }
-    .stats-text strong { color: var(--gold); }
+    .ctrl-stats strong { color: var(--c-gold); }
+    .ctrl-pts-input {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .pts-threshold {
+      background: rgba(1,10,19,.6);
+      border: 1px solid var(--c-border);
+      color: var(--c-gold-light);
+      padding: 3px 8px;
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      width: 90px;
+      text-align: right;
+    }
+    .pts-threshold:focus { border-color: var(--c-gold-dark); outline: none; }
 
-    /* ── Grid ── */
+    /* ══════════════════════════════════════════════════════
+       CHAMPION GRID
+    ══════════════════════════════════════════════════════ */
     #grid {
-      max-width: 1200px;
-      margin: 20px auto 60px;
-      padding: 0 20px;
+      max-width: 1240px;
+      margin: 16px auto 60px;
+      padding: 0 16px;
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-      gap: 4px;
+      grid-template-columns: repeat(auto-fill, minmax(86px, 1fr));
+      gap: 3px;
     }
 
-    /* ── Champion card ── */
     .champ-card {
       position: relative;
-      cursor: default;
-      border-radius: 2px;
-      overflow: hidden;
       aspect-ratio: 1;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      transition: transform .2s, border-color .2s;
+      overflow: hidden;
+      cursor: default;
+      background: var(--c-panel);
+      border: 1px solid var(--c-border);
+      transition: transform .18s, border-color .18s, box-shadow .18s;
+      animation: fadeUp .25s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
     .champ-card:hover {
-      transform: translateY(-3px) scale(1.04);
-      border-color: var(--gold-dim);
-      z-index: 2;
+      transform: scale(1.06) translateY(-2px);
+      border-color: var(--c-gold-dark);
+      box-shadow: 0 4px 20px rgba(0,0,0,.6), 0 0 12px var(--c-gold-glow);
+      z-index: 5;
     }
-    .champ-card.unplayed { opacity: .35; filter: grayscale(.8); }
-    .champ-card.low-pts { opacity: .55; }
+    .champ-card.unplayed  { filter: grayscale(1) brightness(.4); }
+    .champ-card.low-pts   { filter: brightness(.7) saturate(.5); }
+    .champ-card.low-pts:hover, .champ-card.unplayed:hover { filter: none; }
 
     .champ-img {
-      width: 100%;
-      height: 100%;
+      width: 100%; height: 100%;
       object-fit: cover;
       display: block;
       pointer-events: none;
     }
 
-    .champ-overlay {
+    /* Gradient overlay always visible at bottom */
+    .champ-base-overlay {
       position: absolute; inset: 0;
-      background: linear-gradient(0deg, rgba(0,0,0,.85) 0%, transparent 50%);
+      background: linear-gradient(0deg, rgba(1,10,19,.9) 0%, transparent 45%);
+    }
+
+    /* Hover overlay with full info */
+    .champ-hover-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(0deg, rgba(1,10,19,.95) 0%, rgba(1,10,19,.3) 100%);
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
-      padding: 5px 6px;
+      padding: 6px;
       opacity: 0;
-      transition: opacity .2s;
+      transition: opacity .18s;
     }
-    .champ-card:hover .champ-overlay { opacity: 1; }
+    .champ-card:hover .champ-hover-overlay { opacity: 1; }
 
     .champ-name {
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-title);
       font-size: 0.6rem;
-      font-weight: 600;
-      color: #fff;
+      font-weight: 700;
+      color: var(--c-gold-light);
+      letter-spacing: 0.06em;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      letter-spacing: 0.06em;
+      line-height: 1.2;
     }
     .champ-pts {
-      font-size: 0.75rem;
-      color: var(--gold-light);
+      font-size: 0.78rem;
       font-weight: 600;
+      color: var(--c-gold);
+      line-height: 1.3;
     }
+    .champ-pts.zero { color: var(--c-text-dim); font-size: 0.7rem; font-style: italic; }
 
-    /* Mastery level badge */
-    .badge {
+    /* Mastery badge - always visible top-right */
+    .mastery-badge {
       position: absolute;
-      top: 4px; right: 4px;
-      width: 20px; height: 20px;
+      top: 3px; right: 3px;
+      width: 18px; height: 18px;
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-family: 'Cinzel', serif;
-      font-size: 0.55rem;
+      font-family: var(--font-title);
+      font-size: 0.52rem;
       font-weight: 900;
       color: #fff;
-      border: 1.5px solid rgba(255,255,255,.3);
-      backdrop-filter: blur(2px);
+      border: 1px solid rgba(255,255,255,.2);
     }
-    .badge[data-level="10"] { background: rgba(200,155,60,.85); border-color: var(--gold-light); }
-    .badge[data-level="9"]  { background: rgba(200,155,60,.7); }
-    .badge[data-level="8"]  { background: rgba(120,100,200,.75); }
-    .badge[data-level="7"]  { background: rgba(80,160,200,.7); }
-    .badge[data-level="6"]  { background: rgba(60,120,80,.7); }
-    .badge[data-level="5"]  { background: rgba(100,80,50,.7); }
+    .mastery-badge[data-l="10"] { background: rgba(200,170,110,.9); border-color: var(--c-gold-light); color: #000; }
+    .mastery-badge[data-l="9"]  { background: rgba(180,150,90,.8); }
+    .mastery-badge[data-l="8"]  { background: rgba(140,100,200,.75); }
+    .mastery-badge[data-l="7"]  { background: rgba(80,160,200,.7); }
+    .mastery-badge[data-l="6"]  { background: rgba(60,130,90,.7); }
+    .mastery-badge[data-l="5"]  { background: rgba(100,70,40,.7); }
 
-    /* Points bar */
+    /* Bottom progress bar */
     .pts-bar-wrap {
       position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 3px;
-      background: rgba(255,255,255,.08);
+      bottom: 0; left: 0; right: 0; height: 2px;
+      background: rgba(255,255,255,.06);
     }
     .pts-bar {
       height: 100%;
-      background: linear-gradient(90deg, var(--gold-dim), var(--gold));
-      transition: width .4s ease;
+      background: linear-gradient(90deg, var(--c-gold-dark), var(--c-gold));
     }
 
-    /* ── State messages ── */
-    #status {
-      text-align: center;
-      padding: 80px 20px;
-      font-size: 1rem;
-      color: var(--text-dim);
+    /* ══════════════════════════════════════════════════════
+       LOADING SPINNER
+    ══════════════════════════════════════════════════════ */
+    #loading {
       display: none;
-    }
-    .status-icon {
-      font-size: 2.5rem;
-      margin-bottom: 12px;
-      display: block;
-    }
-    #error-msg {
-      max-width: 500px;
-      margin: 24px auto 0;
-      padding: 14px 18px;
-      background: rgba(239,83,80,.08);
-      border: 1px solid rgba(239,83,80,.3);
-      color: #ef9a9a;
-      font-size: 0.9rem;
       text-align: center;
-      display: none;
-      border-radius: 2px;
+      padding: 60px 20px;
     }
-
-    /* ── Spinner ── */
-    .spinner {
-      width: 36px; height: 36px;
-      border: 2px solid var(--border);
-      border-top-color: var(--gold);
-      border-radius: 50%;
-      animation: spin .8s linear infinite;
+    .spinner-hex {
+      width: 48px; height: 48px;
       margin: 0 auto 16px;
+      position: relative;
+    }
+    .spinner-hex::before {
+      content: '';
+      position: absolute; inset: 0;
+      border: 2px solid var(--c-border);
+      border-top-color: var(--c-gold);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ── Responsive ── */
-    @media (max-width: 600px) {
-      .search-grid { grid-template-columns: 1fr 1fr; }
-      .btn-search { grid-column: 1 / -1; width: 100%; }
-      #grid { grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)); }
+    .loading-text {
+      font-family: var(--font-title);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      color: var(--c-text-dim);
+      text-transform: uppercase;
     }
 
-    /* ── Fade-in animation for cards ── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(8px); }
-      to   { opacity: 1; transform: translateY(0); }
+    /* ══════════════════════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════════════════════ */
+    footer {
+      text-align: center;
+      padding: 20px;
+      border-top: 1px solid var(--c-border);
+      font-size: 0.72rem;
+      color: var(--c-text-dim);
     }
-    .champ-card { animation: fadeUp .3s ease both; }
+    footer a { color: var(--c-gold-dark); text-decoration: none; }
+
+    /* ══════════════════════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════════════════════ */
+    @media (max-width: 540px) {
+      .tag-region-row { grid-template-columns: 1fr; }
+      #grid { grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); }
+    }
   </style>
 </head>
 <body>
 
+<!-- ═══════════════════════ HEADER ═══════════════════════ -->
 <header>
-  <div class="logo-line">
-    <span class="logo-diamond"></span>
-    <h1>MASTERY FORGE</h1>
-    <span class="logo-diamond"></span>
-  </div>
-  <p class="subtitle">League of Legends — Champion Mastery Tracker</p>
+  <p class="header-eyebrow">League of Legends</p>
+  <h1>Mastery Forge</h1>
+  <p class="header-sub">Visualisez et filtrez vos maîtrises de champions</p>
+</header>
 
-  <div class="search-wrap">
-    <div class="search-grid">
-      <div class="field" style="grid-column:1/-1">
-        <label>Riot ID</label>
-        <input type="text" id="inp-gamename" placeholder="GameName#TAG" />
+<!-- ═══════════════════════ SEARCH ═══════════════════════ -->
+<div class="search-section">
+  <div class="search-card">
+
+    <!-- Summoner preview -->
+    <div class="summoner-preview" id="summoner-preview">
+      <div class="hex-icon" id="hex-icon">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="32,2 60,17.5 60,46.5 32,62 4,46.5 4,17.5"
+            fill="none" stroke="#785a28" stroke-width="1.5"/>
+        </svg>
+        <img id="profile-icon" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/1.png" alt="icon" />
+        <span class="hex-level" id="sum-level">—</span>
       </div>
-      <div class="field" style="grid-column:1/3">
-        <label>Région</label>
+      <div class="summoner-info" id="sum-info">
+        <div class="summoner-placeholder">Entrez votre Riot ID</div>
+      </div>
+    </div>
+
+    <!-- Game Name -->
+    <div class="fields-row">
+      <div class="field-group">
+        <span class="field-label">Game Name</span>
+        <input type="text" id="inp-name" placeholder="ex : Faker" autocomplete="off"/>
+      </div>
+      <div class="field-group">
+        <span class="field-label">Tag</span>
+        <input type="text" id="inp-tag" placeholder="EUW" style="width:80px" maxlength="8" autocomplete="off"/>
+      </div>
+    </div>
+
+    <!-- Region -->
+    <div class="tag-region-row">
+      <div class="field-group">
+        <span class="field-label">Région</span>
         <select id="inp-region">
           <option value="euw1">EUW</option>
           <option value="eun1">EUNE</option>
@@ -390,29 +566,51 @@
           <option value="oc1">OCE</option>
         </select>
       </div>
-      <div class="field" style="grid-column:3/5; align-self:end;">
-        <button class="btn-search" id="btn-search" onclick="doSearch()">Rechercher</button>
+      <div class="field-group" style="justify-content:flex-end">
+        <span class="field-label">&nbsp;</span>
+        <button class="btn-search" id="btn-search" onclick="doSearch()">
+          ⚔ Analyser les Masteries
+        </button>
       </div>
     </div>
+
   </div>
-</header>
+</div>
 
-<div id="error-msg"></div>
+<!-- ═══════════════════════ ERROR ═══════════════════════ -->
+<div class="error-bar" id="error-bar">
+  <div class="error-inner" id="error-msg"></div>
+</div>
 
-<div id="filters">
-  <div class="filters-inner">
-    <span class="filter-label">Afficher&nbsp;:</span>
-    <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">Tous</button>
-    <button class="filter-btn" data-filter="played" onclick="setFilter('played', this)">Joués</button>
-    <button class="filter-btn" data-filter="unplayed" onclick="setFilter('unplayed', this)">Non joués</button>
-    <button class="filter-btn" data-filter="low" onclick="setFilter('low', this)">
-      &lt; 5 000 pts
+<!-- ═══════════════════════ LOADING ═══════════════════════ -->
+<div id="loading">
+  <div class="spinner-hex"></div>
+  <p class="loading-text">Chargement des masteries…</p>
+</div>
+
+<!-- ═══════════════════════ CONTROLS ═══════════════════════ -->
+<div id="controls">
+  <div class="controls-inner">
+    <span class="ctrl-label">Afficher</span>
+    <button class="filter-btn active" onclick="setFilter('all',this)">Tous</button>
+    <button class="filter-btn" onclick="setFilter('played',this)">Joués</button>
+    <button class="filter-btn" onclick="setFilter('unplayed',this)">Non joués</button>
+    <button class="filter-btn" id="btn-low" onclick="setFilter('low',this)">
+      &lt; <input
+        class="pts-threshold"
+        id="pts-threshold"
+        type="number"
+        value="5000"
+        min="0"
+        onclick="event.stopPropagation()"
+        onchange="updateThresholdLabel()"
+      /> pts
     </button>
 
-    <span class="divider-v"></span>
+    <span class="ctrl-sep"></span>
 
-    <span class="filter-label">Trier&nbsp;:</span>
-    <select class="sort-select" id="sort-select" onchange="applySort()">
+    <span class="ctrl-label">Trier</span>
+    <select class="sort-sel" id="sort-sel" onchange="renderGrid()">
       <option value="pts-desc">Points ↓</option>
       <option value="pts-asc">Points ↑</option>
       <option value="name-asc">Nom A→Z</option>
@@ -420,89 +618,95 @@
       <option value="level-desc">Niveau ↓</option>
     </select>
 
-    <span class="stats-text" id="stats-text"></span>
+    <span class="ctrl-stats" id="ctrl-stats"></span>
   </div>
 </div>
 
-<div id="status"><span class="status-icon">⚔️</span>Entrez un Riot ID pour commencer.</div>
+<!-- ═══════════════════════ GRID ═══════════════════════ -->
 <div id="grid"></div>
 
+<!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+<footer>
+  Mastery Forge n'est pas approuvé par Riot Games.
+  Riot Games et toutes les propriétés associées sont des marques déposées de Riot Games, Inc. —
+  <a href="https://lolcompatibility.com">lolcompatibility.com</a> · PakaRisu
+</footer>
+
 <script>
-// ── DDragon helpers ──────────────────────────────────────────────────────────
-const DD_BASE = "https://ddragon.leagueoflegends.com";
+/* ═══════════════════════════════════════════════════════════════
+   CONFIG & STATE
+═══════════════════════════════════════════════════════════════ */
+const DD = "https://ddragon.leagueoflegends.com";
+let ddVersion  = null;
+let champMap   = {};     // id → { name, img }
+let allData    = [];     // { id, name, img, points, level }
+let maxPts     = 1;
+let curFilter  = 'all';
 
-async function getDDragonVersion() {
-  const r = await fetch(`${DD_BASE}/api/versions.json`);
+/* ═══════════════════════════════════════════════════════════════
+   DDRAGON
+═══════════════════════════════════════════════════════════════ */
+async function getDDVersion() {
+  if (ddVersion) return ddVersion;
+  const r = await fetch(`${DD}/api/versions.json`);
   const v = await r.json();
-  return v[0]; // latest
+  ddVersion = v[0];
+  return ddVersion;
 }
 
-async function getAllChampions(version) {
-  const r = await fetch(`${DD_BASE}/cdn/${version}/data/en_US/champion.json`);
+async function buildChampionMap(version) {
+  const r = await fetch(`${DD}/cdn/${version}/data/en_US/champion.json`);
   const d = await r.json();
-  // Returns { name: { key (numeric id), id (string), name, ... } }
-  return d.data;
-}
-
-// Build map: championId (number) → { name, image }
-function buildChampMap(champData, version) {
   const map = {};
-  for (const [, champ] of Object.entries(champData)) {
-    map[parseInt(champ.key)] = {
-      name: champ.name,
-      img: `${DD_BASE}/cdn/${version}/img/champion/${champ.id}.png`,
-      id: champ.id,
+  for (const c of Object.values(d.data)) {
+    map[parseInt(c.key)] = {
+      name: c.name,
+      img: `${DD}/cdn/${version}/img/champion/${c.id}.png`,
     };
   }
   return map;
 }
 
-// ── State ────────────────────────────────────────────────────────────────────
-let champMap = {};
-let allData  = []; // { id, name, img, points, level }
-let currentFilter = 'all';
-let currentSort   = 'pts-desc';
-let maxPts = 1;
-
-// ── Search ───────────────────────────────────────────────────────────────────
+/* ═══════════════════════════════════════════════════════════════
+   SEARCH
+═══════════════════════════════════════════════════════════════ */
 async function doSearch() {
-  const raw    = document.getElementById('inp-gamename').value.trim();
+  const name   = document.getElementById('inp-name').value.trim();
+  const tag    = document.getElementById('inp-tag').value.trim().replace(/^#/, '');
   const region = document.getElementById('inp-region').value;
 
   hideError();
-  clearGrid();
+  clearResults();
 
-  if (!raw) { showError("Entrez un Riot ID (ex: Faker#KR1)"); return; }
+  if (!name) { showError("Entrez un Game Name."); return; }
+  if (!tag)  { showError("Entrez un Tag (ex: EUW, FR1…)."); return; }
 
-  const parts = raw.split('#');
-  if (parts.length < 2 || !parts[1]) { showError("Format invalide. Utilisez GameName#TAG"); return; }
-
-  const [gameName, tagLine] = parts;
-
-  showLoading();
-  const btn = document.getElementById('btn-search');
-  btn.disabled = true;
+  setBusy(true);
+  showLoading(true);
 
   try {
-    // Load DDragon + Riot in parallel
-    const versionP  = getDDragonVersion();
-    const masteryP  = fetch(`/api/mastery?gameName=${encodeURIComponent(gameName)}&tagLine=${encodeURIComponent(tagLine)}&region=${region}`)
-      .then(r => r.json());
+    const [version, apiResp] = await Promise.all([
+      getDDVersion(),
+      fetch(`/api/mastery?gameName=${encodeURIComponent(name)}&tagLine=${encodeURIComponent(tag)}&region=${region}`)
+        .then(r => r.json())
+    ]);
 
-    const [version, mastData] = await Promise.all([versionP, masteryP]);
-
-    if (mastData.error) { showError(mastData.error); return; }
-
-    const champRaw  = await getAllChampions(version);
-    champMap = buildChampMap(champRaw, version);
-
-    const totalChamps = Object.keys(champMap).length;
-    const masteryMap  = {};
-    for (const m of mastData.masteries) {
-      masteryMap[m.championId] = m;
+    if (apiResp.error) {
+      showError(apiResp.error);
+      return;
     }
 
-    // Merge all champions (including unplayed = 0 pts)
+    // Update profile icon
+    updateProfileIcon(apiResp, region, version);
+
+    // Build champion map if needed
+    champMap = await buildChampionMap(version);
+
+    // Build masteryMap
+    const masteryMap = {};
+    for (const m of apiResp.masteries) masteryMap[m.championId] = m;
+
+    // Merge all champs
     allData = Object.entries(champMap).map(([idStr, c]) => {
       const id = parseInt(idStr);
       const m  = masteryMap[id];
@@ -510,43 +714,66 @@ async function doSearch() {
         id,
         name:   c.name,
         img:    c.img,
-        points: m ? m.championPoints : 0,
-        level:  m ? m.championLevel  : 0,
+        points: m?.championPoints ?? 0,
+        level:  m?.championLevel  ?? 0,
       };
     });
 
     maxPts = Math.max(...allData.map(d => d.points), 1);
 
-    hideStatus();
-    document.getElementById('filters').style.display = 'block';
+    document.getElementById('controls').style.display = 'block';
     updateStats();
     renderGrid();
 
   } catch(e) {
-    showError("Erreur réseau ou serveur. Vérifiez votre connexion.");
     console.error(e);
+    showError(`Erreur réseau ou serveur : ${e.message}`);
   } finally {
-    btn.disabled = false;
+    setBusy(false);
+    showLoading(false);
   }
 }
 
-// ── Render ───────────────────────────────────────────────────────────────────
+/* ═══════════════════════════════════════════════════════════════
+   PROFILE ICON UPDATE
+═══════════════════════════════════════════════════════════════ */
+function updateProfileIcon(data, region, version) {
+  const iconUrl = `${DD}/cdn/${version}/img/profileicon/${data.profileIconId}.png`;
+  document.getElementById('profile-icon').src = iconUrl;
+  document.getElementById('sum-level').textContent = data.summonerLevel || '—';
+
+  const regionLabel = {
+    euw1:'EUW', eun1:'EUNE', na1:'NA', kr:'KR', br1:'BR',
+    la1:'LAN', la2:'LAS', jp1:'JP', tr1:'TR', ru:'RU', oc1:'OCE',
+  }[region] || region.toUpperCase();
+
+  document.getElementById('sum-info').innerHTML = `
+    <div class="summoner-name">${escHtml(data.gameName)}<span class="summoner-tag"> #${escHtml(data.tagLine)}</span></div>
+    <span class="summoner-region-badge">${regionLabel}</span>
+  `;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER
+═══════════════════════════════════════════════════════════════ */
 function getFiltered() {
-  let data = [...allData];
-  if (currentFilter === 'played')   data = data.filter(d => d.points > 0);
-  if (currentFilter === 'unplayed') data = data.filter(d => d.points === 0);
-  if (currentFilter === 'low')      data = data.filter(d => d.points < 5000);
-  return data;
+  const threshold = parseInt(document.getElementById('pts-threshold').value) || 5000;
+  switch (curFilter) {
+    case 'played':   return allData.filter(d => d.points > 0);
+    case 'unplayed': return allData.filter(d => d.points === 0);
+    case 'low':      return allData.filter(d => d.points < threshold);
+    default:         return [...allData];
+  }
 }
 
 function getSorted(data) {
-  const s = currentSort;
+  const s = document.getElementById('sort-sel').value;
   return data.sort((a, b) => {
     if (s === 'pts-desc')   return b.points - a.points;
     if (s === 'pts-asc')    return a.points - b.points;
     if (s === 'name-asc')   return a.name.localeCompare(b.name);
     if (s === 'name-desc')  return b.name.localeCompare(a.name);
-    if (s === 'level-desc') return b.level - a.level || b.points - a.points;
+    if (s === 'level-desc') return (b.level - a.level) || (b.points - a.points);
     return 0;
   });
 }
@@ -556,99 +783,118 @@ function renderGrid() {
   grid.innerHTML = '';
 
   const data = getSorted(getFiltered());
+  updateStats(data.length);
 
-  if (data.length === 0) {
-    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 0;color:var(--text-dim);">Aucun champion dans cette sélection.</div>';
+  if (!data.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 0;color:var(--c-text-dim);font-style:italic;">Aucun champion dans cette sélection.</div>';
     return;
   }
 
+  const frag = document.createDocumentFragment();
   data.forEach((d, i) => {
-    const card  = document.createElement('div');
+    const card = document.createElement('div');
     card.className = 'champ-card';
     if (d.points === 0) card.classList.add('unplayed');
-    else if (d.points < 5000) card.classList.add('low-pts');
-    card.style.animationDelay = `${Math.min(i * 12, 400)}ms`;
+    else if (curFilter === 'low' || document.querySelector('.filter-btn.active')?.textContent?.includes('<')) {
+      // only dim in low filter
+    } else if (d.points < (parseInt(document.getElementById('pts-threshold').value) || 5000)) {
+      card.classList.add('low-pts');
+    }
+    card.style.animationDelay = `${Math.min(i * 8, 320)}ms`;
 
-    const pct = Math.min((d.points / maxPts) * 100, 100);
-    const lvl = d.level;
+    const pct = Math.min((d.points / maxPts) * 100, 100).toFixed(1);
+    const lvlHtml = d.level > 0
+      ? `<div class="mastery-badge" data-l="${Math.min(d.level,10)}">${d.level}</div>` : '';
+    const ptsHtml = d.points > 0
+      ? `<div class="champ-pts">${fmtPts(d.points)}</div>`
+      : `<div class="champ-pts zero">Non joué</div>`;
 
     card.innerHTML = `
-      <img class="champ-img" src="${d.img}" alt="${d.name}" loading="lazy" />
-      ${lvl > 0 ? `<div class="badge" data-level="${Math.min(lvl,10)}">${lvl}</div>` : ''}
-      <div class="champ-overlay">
-        <div class="champ-name">${d.name}</div>
-        <div class="champ-pts">${d.points > 0 ? formatPts(d.points) : '—'}</div>
+      <img class="champ-img" src="${d.img}" alt="${escHtml(d.name)}" loading="lazy"/>
+      <div class="champ-base-overlay"></div>
+      ${lvlHtml}
+      <div class="champ-hover-overlay">
+        <div class="champ-name">${escHtml(d.name)}</div>
+        ${ptsHtml}
       </div>
       <div class="pts-bar-wrap"><div class="pts-bar" style="width:${pct}%"></div></div>
     `;
-
-    grid.appendChild(card);
+    frag.appendChild(card);
   });
+  grid.appendChild(frag);
 }
 
-function formatPts(n) {
-  if (n >= 1_000_000) return (n/1_000_000).toFixed(2) + 'M';
-  if (n >= 1_000)     return (n/1_000).toFixed(1) + 'k';
-  return n.toString();
-}
-
-function updateStats() {
-  const filtered = getFiltered();
-  const played   = filtered.filter(d => d.points > 0).length;
-  const total    = allData.length;
-  const totalPlayed = allData.filter(d => d.points > 0).length;
-  document.getElementById('stats-text').innerHTML =
-    `<strong>${filtered.length}</strong> champions affichés — <strong>${totalPlayed}</strong>/<strong>${total}</strong> joués`;
-}
-
-// ── Controls ─────────────────────────────────────────────────────────────────
+/* ═══════════════════════════════════════════════════════════════
+   CONTROLS
+═══════════════════════════════════════════════════════════════ */
 function setFilter(f, el) {
-  currentFilter = f;
+  curFilter = f;
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
-  updateStats();
   renderGrid();
 }
 
-function applySort() {
-  currentSort = document.getElementById('sort-select').value;
-  renderGrid();
+function updateThresholdLabel() {
+  if (curFilter === 'low') renderGrid();
 }
 
-// ── UI helpers ────────────────────────────────────────────────────────────────
-function showLoading() {
-  const s = document.getElementById('status');
-  s.style.display = 'block';
-  s.innerHTML = '<div class="spinner"></div>Chargement des masteries…';
+function updateStats(shown) {
+  const total   = allData.length;
+  const played  = allData.filter(d => d.points > 0).length;
+  const display = shown ?? getFiltered().length;
+  document.getElementById('ctrl-stats').innerHTML =
+    `<strong>${display}</strong> affichés — <strong>${played}</strong>/<strong>${total}</strong> joués`;
 }
 
-function hideStatus() {
-  document.getElementById('status').style.display = 'none';
-}
-
-function clearGrid() {
-  document.getElementById('grid').innerHTML = '';
-  document.getElementById('filters').style.display = 'none';
-}
-
+/* ═══════════════════════════════════════════════════════════════
+   UI HELPERS
+═══════════════════════════════════════════════════════════════ */
 function showError(msg) {
-  hideStatus();
-  const el = document.getElementById('error-msg');
-  el.textContent = '⚠ ' + msg;
-  el.style.display = 'block';
+  const bar = document.getElementById('error-bar');
+  document.getElementById('error-msg').textContent = '⚠ ' + msg;
+  bar.style.display = 'block';
 }
-
 function hideError() {
-  document.getElementById('error-msg').style.display = 'none';
+  document.getElementById('error-bar').style.display = 'none';
+}
+function showLoading(show) {
+  document.getElementById('loading').style.display = show ? 'block' : 'none';
+}
+function clearResults() {
+  document.getElementById('grid').innerHTML = '';
+  document.getElementById('controls').style.display = 'none';
+}
+function setBusy(b) {
+  document.getElementById('btn-search').disabled = b;
+}
+function fmtPts(n) {
+  if (n >= 1_000_000) return (n/1_000_000).toFixed(2) + 'M';
+  if (n >= 1_000)     return Math.round(n/1_000) + 'k';
+  return n.toLocaleString('fr-FR');
+}
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// Enter key support
-document.getElementById('inp-gamename').addEventListener('keydown', e => {
-  if (e.key === 'Enter') doSearch();
+/* ═══════════════════════════════════════════════════════════════
+   KEYBOARD
+═══════════════════════════════════════════════════════════════ */
+['inp-name','inp-tag'].forEach(id => {
+  document.getElementById(id).addEventListener('keydown', e => {
+    if (e.key === 'Enter') doSearch();
+  });
 });
 
-// Initial status
-document.getElementById('status').style.display = 'block';
+// Auto-focus tag when # typed in name field
+document.getElementById('inp-name').addEventListener('input', e => {
+  if (e.target.value.includes('#')) {
+    const [n, t] = e.target.value.split('#');
+    e.target.value = n;
+    const tagInput = document.getElementById('inp-tag');
+    tagInput.value = t || '';
+    tagInput.focus();
+  }
+});
 </script>
 </body>
 </html>
