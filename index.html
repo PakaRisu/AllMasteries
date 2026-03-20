@@ -704,6 +704,67 @@
       #sidebar { width: 100vw; }
     }
 
+  
+    /* ══════════════════════════════════════════════════════
+       ROLE FILTER BAR
+    ══════════════════════════════════════════════════════ */
+    #role-bar {
+      max-width: 1240px;
+      margin: 6px auto 0;
+      padding: 0 16px;
+      display: none;
+    }
+    .role-bar-inner {
+      background: var(--c-panel);
+      border: 1px solid var(--c-border);
+      border-top: none;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .role-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      border: 1px solid var(--c-border);
+      color: var(--c-text-dim);
+      padding: 5px 12px 5px 8px;
+      font-family: var(--font-title);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all .15s;
+      clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+    }
+    .role-btn:hover { border-color: var(--c-gold-dark); color: var(--c-gold); }
+    .role-btn.active {
+      background: rgba(200,170,110,.12);
+      border-color: var(--c-gold-dark);
+      color: var(--c-gold-light);
+    }
+    .role-btn img {
+      width: 18px; height: 18px;
+      object-fit: contain;
+      opacity: .7;
+      transition: opacity .15s;
+      filter: invert(1) sepia(1) saturate(0) brightness(0.7);
+    }
+    .role-btn:hover img,
+    .role-btn.active img {
+      opacity: 1;
+      filter: invert(1) sepia(1) saturate(3) hue-rotate(5deg) brightness(1.1);
+    }
+    .role-count {
+      font-size: 0.55rem;
+      color: var(--c-text-dim);
+      margin-left: 2px;
+    }
+    .role-btn.active .role-count { color: var(--c-gold-dark); }
+
   </style>
 </head>
 <body>
@@ -819,6 +880,38 @@
   </div>
 </div>
 
+
+<!-- ═══════════════════════ ROLE BAR ═══════════════════════ -->
+<div id="role-bar">
+  <div class="role-bar-inner">
+    <span class="ctrl-label" style="margin-right:4px">Rôle</span>
+    <button class="role-btn active" data-role="all" onclick="setRole('all',this)">
+      <img src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-fill.png" alt="Tous"/>
+      Tous
+    </button>
+    <button class="role-btn" data-role="top" onclick="setRole('top',this)">
+      <img src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-top.png" alt="Top"/>
+      Top <span class="role-count" id="rc-top"></span>
+    </button>
+    <button class="role-btn" data-role="jungle" onclick="setRole('jungle',this)">
+      <img src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-jungle.png" alt="Jungle"/>
+      Jungle <span class="role-count" id="rc-jungle"></span>
+    </button>
+    <button class="role-btn" data-role="mid" onclick="setRole('mid',this)">
+      <img src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-middle.png" alt="Mid"/>
+      Mid <span class="role-count" id="rc-mid"></span>
+    </button>
+    <button class="role-btn" data-role="bot" onclick="setRole('bot',this)">
+      <img src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-bottom.png" alt="Bot"/>
+      Bot <span class="role-count" id="rc-bot"></span>
+    </button>
+    <button class="role-btn" data-role="support" onclick="setRole('support',this)">
+      <img src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-utility.png" alt="Support"/>
+      Support <span class="role-count" id="rc-support"></span>
+    </button>
+  </div>
+</div>
+
 <!-- ═══════════════════════ GRID ═══════════════════════ -->
 <div id="grid"></div>
 
@@ -859,6 +952,8 @@ async function buildChampionMap(version) {
     map[parseInt(c.key)] = {
       name: c.name,
       img: `${DD}/cdn/${version}/img/champion/${c.id}.png`,
+      tags: c.tags || [],   // ex: ["Fighter","Tank"], ["Mage","Support"]...
+      champId: c.id,
     };
   }
   return map;
@@ -917,15 +1012,21 @@ async function doSearch() {
         id,
         name:   c.name,
         img:    c.img,
+        tags:   c.tags || [],
+        roles:  getChampionRoles(c.champId, c.tags || []),
         points: m?.championPoints ?? 0,
         level:  m?.championLevel  ?? 0,
-        mastery: m ?? null,   // objet complet pour la sidebar
+        mastery: m ?? null,
       };
     });
+
+    // Mettre à jour les compteurs de rôles
+    updateRoleCounts();
 
     maxPts = Math.max(...allData.map(d => d.points), 1);
 
     document.getElementById('controls').style.display = 'block';
+    document.getElementById('role-bar').style.display = 'block';
     updateStats();
     renderGrid();
 
@@ -962,12 +1063,18 @@ function updateProfileIcon(data, region, version) {
 ═══════════════════════════════════════════════════════════════ */
 function getFiltered() {
   const threshold = parseInt(document.getElementById('pts-threshold').value) || 5000;
+  let data;
   switch (curFilter) {
-    case 'played':   return allData.filter(d => d.points > 0);
-    case 'unplayed': return allData.filter(d => d.points === 0);
-    case 'low':      return allData.filter(d => d.points < threshold);
-    default:         return [...allData];
+    case 'played':   data = allData.filter(d => d.points > 0); break;
+    case 'unplayed': data = allData.filter(d => d.points === 0); break;
+    case 'low':      data = allData.filter(d => d.points < threshold); break;
+    default:         data = [...allData];
   }
+  // Filtre rôle
+  if (curRole !== 'all') {
+    data = data.filter(d => d.roles.includes(curRole));
+  }
+  return data;
 }
 
 function getSorted(data) {
@@ -1102,6 +1209,132 @@ document.getElementById('inp-name').addEventListener('input', e => {
     tagInput.focus();
   }
 });
+
+
+/* ═══════════════════════════════════════════════════════════════
+   ROLE FILTERING
+═══════════════════════════════════════════════════════════════ */
+let curRole = 'all';
+
+function setRole(role, el) {
+  curRole = role;
+  document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderGrid();
+  updateStats();
+}
+
+function updateRoleCounts() {
+  const roles = ['top','jungle','mid','bot','support'];
+  for (const r of roles) {
+    const el = document.getElementById('rc-' + r);
+    if (el) el.textContent = '(' + allData.filter(d => d.roles.includes(r)).length + ')';
+  }
+}
+
+/*
+  Mapping champion → positions principal(es).
+  DDragon donne des "tags" génériques (Fighter, Mage, Tank…) mais pas les lanes.
+  Ce mapping communautaire couvre tous les champions actuels avec leurs positions principales.
+  Source : wiki LoL + meta 2025.
+  Un champion peut appartenir à plusieurs rôles (ex: Teemo: top+bot).
+*/
+const CHAMP_ROLES = {
+  // TOP
+  Aatrox:['top'], Camille:['top'], Cho:['top','jungle'], Darius:['top'],
+  DrMundo:['top','jungle'], Fiora:['top'], Gangplank:['top'], Garen:['top'],
+  Gnar:['top'], Gragas:['top','jungle'], Gwen:['top'], Illaoi:['top'],
+  Irelia:['top','mid'], Jax:['top','jungle'], Jayce:['top','mid'], Kayle:['top'],
+  Kennen:['top'], Kled:['top'], Malphite:['top'], Maokai:['top','jungle','support'],
+  Mordekaiser:['top'], Nasus:['top'], Olaf:['top','jungle'], Ornn:['top'],
+  Pantheon:['top','support'], Poppy:['top','jungle'], Quinn:['top'],
+  Renekton:['top'], Riven:['top'], Rumble:['top'], Ryze:['top','mid'],
+  Sett:['top'], Shen:['top','support'], Singed:['top'], Sion:['top'],
+  Teemo:['top','bot'], Trundle:['top','jungle'], Tryndamere:['top'],
+  Urgot:['top'], Vander:['top'], Vayne:['top','bot'], VoliBear:['top','jungle'],
+  Warwick:['top','jungle'], Wukong:['top','jungle'], Yasuo:['top','mid'],
+  Yone:['top','mid'], Yorick:['top'], Zac:['jungle','top'],
+
+  // JUNGLE
+  Amumu:['jungle','support'], BelVeth:['jungle'], Briar:['jungle'],
+  Ekko:['jungle','mid'], Elise:['jungle'], Evelynn:['jungle'], Fiddlesticks:['jungle','support'],
+  Graves:['jungle'], Hecarim:['jungle'], Ivern:['jungle','support'],
+  JarvanIV:['jungle'], Karthus:['jungle','mid'], Kayn:['jungle'],
+  Khazix:['jungle'], Kindred:['jungle'], LeeSin:['jungle'], Lillia:['jungle'],
+  MasterYi:['jungle'], Nidalee:['jungle'], Nocturne:['jungle'],
+  Nunu:['jungle'], RekSai:['jungle'], Rengar:['jungle','top'],
+  Sejuani:['jungle'], Shaco:['jungle'], Shyvana:['jungle'], Skarner:['jungle'],
+  Taliyah:['jungle','mid'], Talon:['jungle','mid'], Udyr:['jungle'],
+  Vi:['jungle'], Viego:['jungle'], Volibear:['top','jungle'],
+  XinZhao:['jungle'], Zed:['mid','jungle'],
+
+  // MID
+  Ahri:['mid'], Akali:['mid','top'], Akshan:['mid','top'], Anivia:['mid'],
+  Annie:['mid','support'], AurelionSol:['mid'], Azir:['mid'], Cassiopeia:['mid'],
+  CorneliusTwist:['mid'], Diana:['mid','jungle'], Fizz:['mid'],
+  Galio:['mid','support'], Heimerdinger:['mid','bot'], Katarina:['mid'],
+  Leblanc:['mid'], Lissandra:['mid'], Lux:['mid','support'], Malzahar:['mid'],
+  Naafiri:['mid'], Neeko:['mid','support'], Orianna:['mid'],
+  Qiyana:['mid'], Seraphine:['mid','support','bot'], Sylas:['mid'],
+  Syndra:['mid'], TwistedFate:['mid'], Veigar:['mid','bot'],
+  Vex:['mid'], Viktor:['mid'], Vladimir:['mid','top'], Xerath:['mid','support'],
+  Zoe:['mid'], Ziggs:['mid','bot'],
+
+  // BOT (ADC)
+  Aphelios:['bot'], Ashe:['bot','support'], Caitlyn:['bot'],
+  Corki:['bot','mid'], Draven:['bot'], Ezreal:['bot'],
+  Jhin:['bot'], Jinx:['bot'], KaiSa:['bot'], Kalista:['bot'],
+  KogMaw:['bot'], Lucian:['bot','mid'], MissFortune:['bot'],
+  Nilah:['bot'], Samira:['bot'], Sivir:['bot'], Smolder:['bot'],
+  Tristana:['bot','mid'], Twitch:['bot','jungle'], Varus:['bot','mid'],
+  Xayah:['bot'], Zeri:['bot'],
+
+  // SUPPORT
+  Alistar:['support'], Bard:['support'], Blitzcrank:['support'],
+  Brand:['support','mid'], Braum:['support'], Heimerdinger:['support','mid'],
+  Janna:['support'], Karma:['support','mid'], Leona:['support'],
+  Lulu:['support'], Morgana:['support','mid'], Nami:['support'],
+  Nautilus:['support'], Pyke:['support'], Rakan:['support'],
+  Rell:['support'], Renata:['support'], Senna:['support','bot'],
+  Shaco:['support','jungle'], Sona:['support'], Soraka:['support'],
+  Swain:['support','mid'], Tahm:['support','top'], Taric:['support'],
+  Thresh:['support'], Vel:['support','mid'], Yuumi:['support'],
+  Zilean:['support','mid'], Zyra:['support'],
+
+  // Champions récents / flex
+  Ambessa:['top'], Aurora:['top','mid'], Briar:['jungle'],
+  Hwei:['mid','support'], Milio:['support'], Naafiri:['mid'],
+  Smolder:['bot'], Vander:['top'], Mel:['mid'],
+};
+
+// Fallback basé sur les tags DDragon si le champion n'est pas dans le mapping
+const TAG_ROLE_FALLBACK = {
+  Fighter:  ['top'],
+  Tank:     ['top','support'],
+  Mage:     ['mid','support'],
+  Assassin: ['mid'],
+  Marksman: ['bot'],
+  Support:  ['support'],
+};
+
+function getChampionRoles(champStringId, tags) {
+  // Chercher dans le mapping par champId (ex: "MissFortune", "LeeSin")
+  if (CHAMP_ROLES[champStringId]) return CHAMP_ROLES[champStringId];
+
+  // Essai avec variations de nom
+  const clean = champStringId.replace(/[^a-zA-Z]/g, '');
+  for (const [k, v] of Object.entries(CHAMP_ROLES)) {
+    if (k.replace(/[^a-zA-Z]/g,'').toLowerCase() === clean.toLowerCase()) return v;
+  }
+
+  // Fallback DDragon tags
+  const roles = new Set();
+  for (const tag of tags) {
+    const mapped = TAG_ROLE_FALLBACK[tag];
+    if (mapped) mapped.forEach(r => roles.add(r));
+  }
+  return roles.size > 0 ? [...roles] : ['top','jungle','mid','bot','support'];
+}
 
 /* ═══════════════════════════════════════════════════════════════
    LEVEL COLORS (Riot official palette, niveaux illimités)
