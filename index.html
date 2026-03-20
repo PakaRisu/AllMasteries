@@ -6,33 +6,22 @@
   <title>Masteries Checker</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Beaufort+for+LOL:wght@400;700&family=Spiegel:wght@400;600&display=swap" rel="stylesheet"/>
-  <!-- Fallback fonts if Beaufort isn't available publicly -->
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet"/>
   <style>
-    /* ══════════════════════════════════════════════════════
-       VARIABLES & RESET
-    ══════════════════════════════════════════════════════ */
     :root {
-      --c-gold:        #c8aa6e;
-      --c-gold-light:  #f0e6d3;
-      --c-gold-dark:   #785a28;
-      --c-gold-glow:   rgba(200,170,110,.35);
-      --c-bg:          #010a13;
-      --c-bg2:         #0a1628;
-      --c-bg3:         #091428;
-      --c-panel:       #0d1b2e;
-      --c-panel2:      #112233;
-      --c-border:      #1e3048;
-      --c-border2:     #785a28;
-      --c-text:        #a9b4c0;
-      --c-text-dim:    #5b6a7a;
-      --c-blue:        #0ac8b9;
-      --c-blue2:       #00b4d8;
-      --c-hex:         #c8aa6e;
-      --font-title:    'Cinzel', 'BeaufortforLOL', serif;
-      --font-body:     'Source Sans 3', 'Spiegel', sans-serif;
-      --radius:        2px;
+      --c-gold:       #c8aa6e;
+      --c-gold-light: #f0e6d3;
+      --c-gold-dark:  #785a28;
+      --c-gold-glow:  rgba(200,170,110,.35);
+      --c-bg:         #010a13;
+      --c-bg2:        #0a1628;
+      --c-panel:      #0d1b2e;
+      --c-border:     #1e3048;
+      --c-text:       #a9b4c0;
+      --c-text-dim:   #5b6a7a;
+      --c-blue:       #0ac8b9;
+      --font-title:   'Cinzel', serif;
+      --font-body:    'Source Sans 3', sans-serif;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
@@ -48,918 +37,203 @@
       background-size: auto, 60px 104px;
     }
 
-    /* ══════════════════════════════════════════════════════
-       HEADER
-    ══════════════════════════════════════════════════════ */
-    header {
-      text-align: center;
-      padding: 40px 24px 28px;
-      position: relative;
-    }
+    /* HEADER */
+    header { text-align: center; padding: 40px 24px 28px; position: relative; }
     header::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 50%; transform: translateX(-50%);
+      content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
       width: 60%; max-width: 600px; height: 1px;
       background: linear-gradient(90deg, transparent, var(--c-gold-dark), var(--c-gold), var(--c-gold-dark), transparent);
     }
-    .header-eyebrow {
-      font-family: var(--font-title);
-      font-size: 0.6rem;
-      letter-spacing: 0.25em;
-      color: var(--c-gold-dark);
-      text-transform: uppercase;
-      margin-bottom: 10px;
-    }
-    h1 {
-      font-family: var(--font-title);
-      font-size: clamp(1.8rem, 5vw, 3rem);
-      font-weight: 900;
-      color: var(--c-gold-light);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      text-shadow: 0 0 60px var(--c-gold-glow), 0 2px 4px rgba(0,0,0,.8);
-      line-height: 1;
-      margin-bottom: 8px;
-    }
-    .header-sub {
-      font-size: 0.85rem;
-      color: var(--c-text-dim);
-      letter-spacing: 0.08em;
-    }
+    .header-eyebrow { font-family: var(--font-title); font-size: .6rem; letter-spacing: .25em; color: var(--c-gold-dark); text-transform: uppercase; margin-bottom: 10px; }
+    h1 { font-family: var(--font-title); font-size: clamp(1.8rem,5vw,3rem); font-weight: 900; color: var(--c-gold-light); letter-spacing: .1em; text-transform: uppercase; text-shadow: 0 0 60px var(--c-gold-glow), 0 2px 4px rgba(0,0,0,.8); line-height: 1; margin-bottom: 8px; }
+    .header-sub { font-size: .85rem; color: var(--c-text-dim); letter-spacing: .08em; }
 
-    /* ══════════════════════════════════════════════════════
-       SEARCH CARD
-    ══════════════════════════════════════════════════════ */
-    .search-section {
-      max-width: 560px;
-      margin: 32px auto 0;
-      padding: 0 16px;
-    }
+    /* SEARCH */
+    .search-section { max-width: 560px; margin: 32px auto 0; padding: 0 16px; }
     .search-card {
       background: linear-gradient(135deg, var(--c-panel) 0%, var(--c-bg2) 100%);
-      border: 1px solid var(--c-border);
-      border-top: 1px solid var(--c-gold-dark);
-      padding: 28px 28px 24px;
-      position: relative;
+      border: 1px solid var(--c-border); border-top-color: var(--c-gold-dark);
+      padding: 28px 28px 24px; position: relative;
       clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
     }
-    /* Corner ornaments */
-    .search-card::before, .search-card::after {
-      content: '';
-      position: absolute;
-      width: 8px; height: 8px;
-      border-color: var(--c-gold-dark);
-      border-style: solid;
-    }
+    .search-card::before, .search-card::after { content: ''; position: absolute; width: 8px; height: 8px; border-color: var(--c-gold-dark); border-style: solid; }
     .search-card::before { top: 6px; left: 6px; border-width: 1px 0 0 1px; }
     .search-card::after  { bottom: 6px; right: 6px; border-width: 0 1px 1px 0; }
-
-    /* Summoner preview row */
-    .summoner-preview {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 20px;
-    }
-    .hex-icon {
-      position: relative;
-      flex-shrink: 0;
-      width: 64px;
-      height: 64px;
-    }
-    .hex-icon svg {
-      position: absolute; inset: 0; width: 100%; height: 100%;
-    }
-    .hex-icon img {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 52px; height: 52px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-    .hex-level {
-      position: absolute;
-      bottom: -2px; left: 50%; transform: translateX(-50%);
-      background: var(--c-bg);
-      border: 1px solid var(--c-gold-dark);
-      color: var(--c-gold);
-      font-family: var(--font-title);
-      font-size: 0.55rem;
-      padding: 1px 5px;
-      white-space: nowrap;
-    }
-    .summoner-info {
-      flex: 1;
-    }
-    .summoner-name {
-      font-family: var(--font-title);
-      font-size: 1.1rem;
-      color: var(--c-gold-light);
-      letter-spacing: 0.05em;
-    }
-    .summoner-tag {
-      color: var(--c-gold-dark);
-      font-size: 0.85rem;
-    }
-    .summoner-region-badge {
-      display: inline-block;
-      background: rgba(200,170,110,.1);
-      border: 1px solid var(--c-gold-dark);
-      color: var(--c-gold);
-      font-family: var(--font-title);
-      font-size: 0.55rem;
-      letter-spacing: 0.1em;
-      padding: 2px 7px;
-      margin-top: 4px;
-    }
-    .summoner-placeholder {
-      color: var(--c-text-dim);
-      font-size: 0.85rem;
-      font-style: italic;
-    }
-
-    /* Form fields */
-    .fields-row {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 8px;
-      margin-bottom: 8px;
-    }
-    .tag-region-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-    .field-group {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-    .field-label {
-      font-family: var(--font-title);
-      font-size: 0.58rem;
-      letter-spacing: 0.15em;
-      color: var(--c-gold-dark);
-      text-transform: uppercase;
-    }
-    input, select {
-      background: rgba(1,10,19,.6);
-      border: 1px solid var(--c-border);
-      border-bottom-color: var(--c-gold-dark);
-      color: var(--c-gold-light);
-      padding: 9px 12px;
-      font-family: var(--font-body);
-      font-size: 0.95rem;
-      outline: none;
-      transition: border-color .2s, box-shadow .2s;
-      width: 100%;
-      border-radius: 0;
-    }
+    .summoner-preview { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+    .hex-icon { position: relative; flex-shrink: 0; width: 64px; height: 64px; }
+    .hex-icon svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .hex-icon img { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 52px; height: 52px; border-radius: 50%; object-fit: cover; }
+    .hex-level { position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%); background: var(--c-bg); border: 1px solid var(--c-gold-dark); color: var(--c-gold); font-family: var(--font-title); font-size: .55rem; padding: 1px 5px; white-space: nowrap; }
+    .summoner-info { flex: 1; }
+    .summoner-name { font-family: var(--font-title); font-size: 1.1rem; color: var(--c-gold-light); letter-spacing: .05em; }
+    .summoner-tag { color: var(--c-gold-dark); font-size: .85rem; }
+    .summoner-region-badge { display: inline-block; background: rgba(200,170,110,.1); border: 1px solid var(--c-gold-dark); color: var(--c-gold); font-family: var(--font-title); font-size: .55rem; letter-spacing: .1em; padding: 2px 7px; margin-top: 4px; }
+    .summoner-placeholder { color: var(--c-text-dim); font-size: .85rem; font-style: italic; }
+    .fields-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-bottom: 8px; }
+    .tag-region-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+    .field-group { display: flex; flex-direction: column; gap: 5px; }
+    .field-label { font-family: var(--font-title); font-size: .58rem; letter-spacing: .15em; color: var(--c-gold-dark); text-transform: uppercase; }
+    input, select { background: rgba(1,10,19,.6); border: 1px solid var(--c-border); border-bottom-color: var(--c-gold-dark); color: var(--c-gold-light); padding: 9px 12px; font-family: var(--font-body); font-size: .95rem; outline: none; transition: border-color .2s, box-shadow .2s; width: 100%; border-radius: 0; }
     input::placeholder { color: var(--c-text-dim); font-style: italic; }
-    input:focus, select:focus {
-      border-color: var(--c-gold-dark);
-      border-bottom-color: var(--c-gold);
-      box-shadow: 0 2px 0 -1px var(--c-gold), inset 0 0 20px rgba(200,170,110,.04);
-    }
+    input:focus, select:focus { border-color: var(--c-gold-dark); border-bottom-color: var(--c-gold); box-shadow: 0 2px 0 -1px var(--c-gold), inset 0 0 20px rgba(200,170,110,.04); }
     select option { background: var(--c-panel); color: var(--c-text); }
-
-    .btn-search {
-      width: 100%;
-      padding: 11px 20px;
-      background: linear-gradient(180deg, #1e3a5f 0%, #0d1b2e 100%);
-      border: 1px solid var(--c-gold-dark);
-      color: var(--c-gold-light);
-      font-family: var(--font-title);
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      cursor: pointer;
-      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
-      transition: background .2s, color .2s;
-    }
-    .btn-search:hover {
-      background: linear-gradient(180deg, #2a4d7a 0%, #1a2e4a 100%);
-      color: var(--c-gold);
-    }
+    .btn-search { width: 100%; padding: 11px 20px; background: linear-gradient(180deg,#1e3a5f,#0d1b2e); border: 1px solid var(--c-gold-dark); color: var(--c-gold-light); font-family: var(--font-title); font-size: .75rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; cursor: pointer; clip-path: polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px)); transition: background .2s, color .2s; }
+    .btn-search:hover { background: linear-gradient(180deg,#2a4d7a,#1a2e4a); color: var(--c-gold); }
     .btn-search:disabled { opacity: .5; cursor: not-allowed; }
 
-    /* ══════════════════════════════════════════════════════
-       ERROR / STATUS
-    ══════════════════════════════════════════════════════ */
-    .error-bar {
-      max-width: 560px;
-      margin: 14px auto 0;
-      padding: 0 16px;
-      display: none;
-    }
-    .error-inner {
-      background: rgba(200,40,40,.08);
-      border: 1px solid rgba(200,40,40,.3);
-      border-left: 3px solid #c83232;
-      padding: 10px 14px;
-      font-size: 0.88rem;
-      color: #e07070;
-    }
+    /* ERROR */
+    .error-bar { max-width: 560px; margin: 14px auto 0; padding: 0 16px; display: none; }
+    .error-inner { background: rgba(200,40,40,.08); border: 1px solid rgba(200,40,40,.3); border-left: 3px solid #c83232; padding: 10px 14px; font-size: .88rem; color: #e07070; }
 
-    /* ══════════════════════════════════════════════════════
-       FILTERS / CONTROLS BAR
-    ══════════════════════════════════════════════════════ */
-    #controls {
-      max-width: 1240px;
-      margin: 28px auto 0;
-      padding: 0 16px;
-      display: none;
-    }
-    .controls-inner {
-      background: var(--c-panel);
-      border: 1px solid var(--c-border);
-      border-top: 1px solid var(--c-gold-dark);
-      padding: 12px 16px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 10px;
-    }
-    .ctrl-sort-group {
-      margin-left: auto;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .ctrl-label {
-      font-family: var(--font-title);
-      font-size: 0.58rem;
-      letter-spacing: 0.12em;
-      color: var(--c-gold-dark);
-      text-transform: uppercase;
-    }
-    .filter-btn {
-      background: transparent;
-      border: 1px solid var(--c-border);
-      color: var(--c-text-dim);
-      padding: 4px 12px;
-      font-family: var(--font-title);
-      font-size: 0.6rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: all .15s;
-      clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
-    }
+    /* CONTROLS */
+    #controls { max-width: 1240px; margin: 28px auto 0; padding: 0 16px; display: none; }
+    .controls-inner { background: var(--c-panel); border: 1px solid var(--c-border); border-top-color: var(--c-gold-dark); padding: 12px 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+    .ctrl-sort-group { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+    .ctrl-label { font-family: var(--font-title); font-size: .58rem; letter-spacing: .12em; color: var(--c-gold-dark); text-transform: uppercase; }
+    .filter-btn { background: transparent; border: 1px solid var(--c-border); color: var(--c-text-dim); padding: 4px 12px; font-family: var(--font-title); font-size: .6rem; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; transition: all .15s; clip-path: polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px)); }
     .filter-btn:hover { border-color: var(--c-gold-dark); color: var(--c-gold); }
-    .filter-btn.active {
-      background: rgba(200,170,110,.12);
-      border-color: var(--c-gold-dark);
-      color: var(--c-gold-light);
-    }
-    .ctrl-sep { width: 1px; height: 20px; background: var(--c-border); flex-shrink: 0; }
-    .sort-sel {
-      background: transparent;
-      border: 1px solid var(--c-border);
-      color: var(--c-text);
-      padding: 4px 10px;
-      font-family: var(--font-title);
-      font-size: 0.6rem;
-      letter-spacing: 0.08em;
-      cursor: pointer;
-    }
+    .filter-btn.active { background: rgba(200,170,110,.12); border-color: var(--c-gold-dark); color: var(--c-gold-light); }
+    .sort-sel { background: transparent; border: 1px solid var(--c-border); color: var(--c-text); padding: 4px 10px; font-family: var(--font-title); font-size: .6rem; letter-spacing: .08em; cursor: pointer; }
     .sort-sel option { background: var(--c-panel); }
-    .ctrl-stats {
-      font-size: 0.82rem;
-      color: var(--c-text-dim);
-    }
+    .ctrl-stats { font-size: .82rem; color: var(--c-text-dim); }
     .ctrl-stats strong { color: var(--c-gold); }
-    .ctrl-pts-input {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .pts-threshold {
-      background: rgba(1,10,19,.6);
-      border: 1px solid var(--c-border);
-      color: var(--c-gold-light);
-      padding: 3px 8px;
-      font-family: var(--font-body);
-      font-size: 0.82rem;
-      width: 90px;
-      text-align: right;
-    }
+    .pts-threshold { background: rgba(1,10,19,.6); border: 1px solid var(--c-border); color: var(--c-gold-light); padding: 3px 8px; font-family: var(--font-body); font-size: .82rem; width: 80px; text-align: right; }
     .pts-threshold:focus { border-color: var(--c-gold-dark); outline: none; }
 
-    /* ══════════════════════════════════════════════════════
-       CHAMPION GRID
-    ══════════════════════════════════════════════════════ */
-    #grid {
-      max-width: 1240px;
-      margin: 16px auto 60px;
-      padding: 0 16px;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-      gap: 6px;
-    }
+    /* ROLE BAR */
+    #role-bar { max-width: 1240px; margin: 6px auto 0; padding: 0 16px; display: none; }
+    .role-bar-inner { background: var(--c-panel); border: 1px solid var(--c-border); border-top: none; padding: 8px 14px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .role-btn { display: flex; align-items: center; gap: 6px; background: transparent; border: 1px solid var(--c-border); color: var(--c-text-dim); padding: 5px 12px 5px 8px; font-family: var(--font-title); font-size: .6rem; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; transition: all .15s; clip-path: polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px)); }
+    .role-btn:hover { border-color: var(--c-gold-dark); color: var(--c-gold); }
+    .role-btn.active { background: rgba(200,170,110,.12); border-color: var(--c-gold-dark); color: var(--c-gold-light); }
+    .role-btn img { width: 18px; height: 18px; object-fit: contain; opacity: .7; transition: opacity .15s; filter: invert(1) sepia(1) saturate(0) brightness(.7); }
+    .role-btn:hover img, .role-btn.active img { opacity: 1; filter: invert(1) sepia(1) saturate(3) hue-rotate(5deg) brightness(1.1); }
+    .role-count { font-size: .55rem; color: var(--c-text-dim); margin-left: 2px; }
+    .role-btn.active .role-count { color: var(--c-gold-dark); }
 
-    .champ-card {
-      position: relative;
-      overflow: hidden;
-      cursor: default;
-      background: var(--c-panel);
-      border: 2px solid var(--c-border);
-      border-radius: 3px;
-      transition: transform .18s, border-color .18s, box-shadow .18s;
-      animation: fadeUp .25s ease both;
-      display: flex;
-      flex-direction: column;
-    }
-    /* Contours dynamiques via CSS variable --lc définie inline par JS */
-    .champ-card { border-color: var(--lc, #1e3048); }
-    .champ-card.glowing { box-shadow: 0 0 var(--lc-glow-size, 0px) var(--lc, transparent); }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(6px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .champ-card:hover {
-      transform: scale(1.04) translateY(-2px);
-      box-shadow: 0 6px 24px rgba(0,0,0,.7);
-      z-index: 5;
-    }
+    /* GRID */
+    #grid { max-width: 1240px; margin: 16px auto 60px; padding: 0 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(110px,1fr)); gap: 6px; }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+    .champ-card { position: relative; overflow: hidden; cursor: pointer; background: var(--c-panel); border: 2px solid var(--lc,#1e3048); border-radius: 3px; transition: transform .18s, box-shadow .18s; animation: fadeUp .25s ease both; display: flex; flex-direction: column; }
+    .champ-card.glowing { box-shadow: 0 0 var(--lc-glow-size,0px) var(--lc,transparent); }
+    .champ-card:hover { transform: scale(1.04) translateY(-2px); box-shadow: 0 6px 24px rgba(0,0,0,.7) !important; z-index: 5; }
     .champ-card[data-level="0"] .champ-img { filter: grayscale(1) brightness(.5); }
+    .champ-img-wrap { position: relative; pointer-events: none; }
+    .champ-img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; pointer-events: none; }
+    .champ-base-overlay { position: absolute; bottom: 0; left: 0; right: 0; height: 30%; background: linear-gradient(0deg,rgba(1,10,19,.7),transparent); pointer-events: none; }
+    .champ-info { padding: 5px 6px 6px; display: flex; flex-direction: column; gap: 2px; background: var(--c-panel); pointer-events: none; }
+    .champ-name { font-family: var(--font-title); font-size: .62rem; font-weight: 700; color: var(--c-gold-light); letter-spacing: .04em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.3; }
+    .champ-pts { font-size: .72rem; font-weight: 600; color: var(--c-gold); line-height: 1.2; font-variant-numeric: tabular-nums; }
+    .champ-pts.zero { color: #555566; font-size: .65rem; font-style: italic; }
+    .champ-level-label { font-family: var(--font-title); font-size: .55rem; letter-spacing: .08em; line-height: 1.2; }
 
-    .champ-img {
-      width: 100%;
-      aspect-ratio: 1;
-      object-fit: cover;
-      display: block;
-      pointer-events: none;
-    }
-
-    /* Gradient overlay on image only */
-    .champ-img-wrap {
-      position: relative;
-      pointer-events: none;
-    }
-    .champ-base-overlay {
-      position: absolute; bottom: 0; left: 0; right: 0; height: 30%;
-      background: linear-gradient(0deg, rgba(1,10,19,.7) 0%, transparent 100%);
-      pointer-events: none;
-    }
-
-    /* Info bar sous l'image - toujours visible */
-    .champ-info {
-      padding: 5px 6px 6px;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      background: var(--c-panel);
-      pointer-events: none;
-    }
-
-    .champ-name {
-      font-family: var(--font-title);
-      font-size: 0.62rem;
-      font-weight: 700;
-      color: var(--c-gold-light);
-      letter-spacing: 0.04em;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      line-height: 1.3;
-    }
-    .champ-pts {
-      font-size: 0.72rem;
-      font-weight: 600;
-      color: var(--c-gold);
-      line-height: 1.2;
-      font-variant-numeric: tabular-nums;
-    }
-    .champ-pts.zero { color: #555566; font-size: 0.65rem; font-style: italic; }
-    .champ-level-label {
-      font-family: var(--font-title);
-      font-size: 0.55rem;
-      letter-spacing: 0.08em;
-      line-height: 1.2;
-    }
-
-    /* Mastery badge supprimé - info dans .champ-info */
-
-
-
-    /* ══════════════════════════════════════════════════════
-       LOADING SPINNER
-    ══════════════════════════════════════════════════════ */
-    #loading {
-      display: none;
-      text-align: center;
-      padding: 60px 20px;
-    }
-    .spinner-hex {
-      width: 48px; height: 48px;
-      margin: 0 auto 16px;
-      position: relative;
-    }
-    .spinner-hex::before {
-      content: '';
-      position: absolute; inset: 0;
-      border: 2px solid var(--c-border);
-      border-top-color: var(--c-gold);
-      border-radius: 50%;
-      animation: spin .7s linear infinite;
-    }
+    /* LOADING */
+    #loading { display: none; text-align: center; padding: 60px 20px; }
+    .spinner-hex { width: 48px; height: 48px; margin: 0 auto 16px; position: relative; }
+    .spinner-hex::before { content: ''; position: absolute; inset: 0; border: 2px solid var(--c-border); border-top-color: var(--c-gold); border-radius: 50%; animation: spin .7s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .loading-text {
-      font-family: var(--font-title);
-      font-size: 0.7rem;
-      letter-spacing: 0.2em;
-      color: var(--c-text-dim);
-      text-transform: uppercase;
-    }
+    .loading-text { font-family: var(--font-title); font-size: .7rem; letter-spacing: .2em; color: var(--c-text-dim); text-transform: uppercase; }
 
-    /* ══════════════════════════════════════════════════════
-       FOOTER
-    ══════════════════════════════════════════════════════ */
-    footer {
-      text-align: center;
-      padding: 20px;
-      border-top: 1px solid var(--c-border);
-      font-size: 0.72rem;
-      color: var(--c-text-dim);
-    }
+    /* FOOTER */
+    footer { text-align: center; padding: 20px; border-top: 1px solid var(--c-border); font-size: .72rem; color: var(--c-text-dim); }
     footer a { color: var(--c-gold-dark); text-decoration: none; }
+    .options-btn { display: inline-flex; align-items: center; gap: 6px; background: transparent; border: 1px solid var(--c-border); color: var(--c-text-dim); padding: 5px 12px; font-family: var(--font-title); font-size: .6rem; letter-spacing: .12em; text-transform: uppercase; cursor: pointer; transition: all .2s; clip-path: polygon(0 0,calc(100% - 7px) 0,100% 7px,100% 100%,7px 100%,0 calc(100% - 7px)); margin-top: 12px; }
+    .options-btn:hover { border-color: var(--c-gold-dark); color: var(--c-gold); }
+    .options-btn svg { width: 12px; height: 12px; fill: currentColor; transition: transform .4s; }
+    .options-btn:hover svg { transform: rotate(60deg); }
 
-    /* ══════════════════════════════════════════════════════
-       RESPONSIVE
-    ══════════════════════════════════════════════════════ */
-    @media (max-width: 540px) {
-      .tag-region-row { grid-template-columns: 1fr; }
-      #grid { grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); gap: 4px; }
-    }
-  
-    /* ══════════════════════════════════════════════════════
-       SIDEBAR DETAIL PANEL
-    ══════════════════════════════════════════════════════ */
-    #sidebar {
-      position: fixed;
-      top: 0; right: 0;
-      width: 340px; height: 100vh;
-      background: linear-gradient(160deg, #0d1b2e 0%, #091020 100%);
-      border-left: 1px solid var(--c-border);
-      border-left-color: var(--sb-color, var(--c-border));
-      box-shadow: -8px 0 40px rgba(0,0,0,.7);
-      z-index: 1000;
-      transform: translateX(100%);
-      transition: transform .3s cubic-bezier(.4,0,.2,1);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
+    /* SIDEBAR */
+    #sb-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 999; opacity: 0; pointer-events: none; transition: opacity .3s; }
+    #sb-overlay.open { opacity: 1; pointer-events: all; }
+    #sidebar { position: fixed; top: 0; right: 0; width: 340px; height: 100vh; background: linear-gradient(160deg,#0d1b2e,#091020); border-left: 2px solid var(--sb-color,var(--c-border)); box-shadow: -8px 0 40px rgba(0,0,0,.7); z-index: 1000; transform: translateX(100%); transition: transform .3s cubic-bezier(.4,0,.2,1); display: flex; flex-direction: column; overflow: hidden; }
     #sidebar.open { transform: translateX(0); }
-
-    .sb-close {
-      position: absolute;
-      top: 12px; left: 12px;
-      background: none;
-      border: 1px solid var(--c-border);
-      color: var(--c-text-dim);
-      width: 28px; height: 28px;
-      cursor: pointer;
-      font-size: 1rem;
-      display: flex; align-items: center; justify-content: center;
-      transition: border-color .15s, color .15s;
-      flex-shrink: 0;
-    }
+    .sb-close { position: absolute; top: 12px; left: 12px; background: none; border: 1px solid var(--c-border); color: var(--c-text-dim); width: 28px; height: 28px; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: border-color .15s, color .15s; z-index: 1; }
     .sb-close:hover { border-color: var(--c-gold-dark); color: var(--c-gold); }
-
-    .sb-header {
-      padding: 16px 16px 14px;
-      border-bottom: 1px solid var(--c-border);
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      flex-shrink: 0;
-    }
-    .sb-champ-img {
-      width: 64px; height: 64px;
-      object-fit: cover;
-      border: 2px solid var(--sb-color, var(--c-border));
-      box-shadow: 0 0 12px var(--sb-color, transparent);
-      flex-shrink: 0;
-    }
-    .sb-champ-title { flex: 1; }
-    .sb-champ-name {
-      font-family: var(--font-title);
-      font-size: 1rem;
-      color: var(--c-gold-light);
-      letter-spacing: 0.06em;
-    }
-    .sb-level-badge {
-      display: inline-block;
-      margin-top: 4px;
-      padding: 2px 10px;
-      font-family: var(--font-title);
-      font-size: 0.65rem;
-      letter-spacing: 0.1em;
-      font-weight: 700;
-      color: #000;
-      background: var(--sb-color, var(--c-gold));
-      clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
-    }
-    .sb-last-played {
-      font-size: 0.75rem;
-      color: var(--c-text-dim);
-      margin-top: 2px;
-    }
-
-    .sb-body {
-      flex: 1;
-      overflow-y: auto;
-      padding: 0 16px 20px;
-    }
+    .sb-header { padding: 16px 16px 14px 48px; border-bottom: 1px solid var(--c-border); display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+    .sb-champ-img { width: 64px; height: 64px; object-fit: cover; border: 2px solid var(--sb-color,var(--c-border)); box-shadow: 0 0 12px var(--sb-color,transparent); flex-shrink: 0; }
+    .sb-champ-title { flex: 1; min-width: 0; }
+    .sb-champ-name { font-family: var(--font-title); font-size: 1rem; color: var(--c-gold-light); letter-spacing: .06em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sb-level-badge { display: inline-block; margin-top: 4px; padding: 2px 10px; font-family: var(--font-title); font-size: .65rem; letter-spacing: .1em; font-weight: 700; clip-path: polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px)); }
+    .sb-last-played { font-size: .75rem; color: var(--c-text-dim); margin-top: 4px; }
+    .sb-body { flex: 1; overflow-y: auto; padding: 0 16px 20px; }
     .sb-body::-webkit-scrollbar { width: 4px; }
-    .sb-body::-webkit-scrollbar-track { background: transparent; }
     .sb-body::-webkit-scrollbar-thumb { background: var(--c-border); border-radius: 2px; }
-
-    .sb-section {
-      margin-top: 16px;
-    }
-    .sb-section-title {
-      font-family: var(--font-title);
-      font-size: 0.58rem;
-      letter-spacing: 0.15em;
-      color: var(--c-gold-dark);
-      text-transform: uppercase;
-      padding-bottom: 6px;
-      border-bottom: 1px solid var(--c-border);
-      margin-bottom: 10px;
-    }
-
-    .sb-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 4px 0;
-      font-size: 0.85rem;
-      border-bottom: 1px solid rgba(30,48,72,.4);
-    }
+    .sb-section { margin-top: 16px; }
+    .sb-section-title { font-family: var(--font-title); font-size: .58rem; letter-spacing: .15em; color: var(--c-gold-dark); text-transform: uppercase; padding-bottom: 6px; border-bottom: 1px solid var(--c-border); margin-bottom: 10px; }
+    .sb-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; font-size: .85rem; border-bottom: 1px solid rgba(30,48,72,.4); }
     .sb-row:last-child { border-bottom: none; }
-    .sb-row-label { color: var(--c-text-dim); font-size: 0.8rem; }
+    .sb-row-label { color: var(--c-text-dim); font-size: .8rem; }
     .sb-row-value { color: var(--c-text); font-weight: 600; text-align: right; }
     .sb-row-value.gold { color: var(--c-gold); }
     .sb-row-value.highlight { color: #f0e6d3; }
-
-    /* Progress bar pts niveau */
-    .sb-progress-wrap {
-      margin: 10px 0 4px;
-      height: 6px;
-      background: rgba(255,255,255,.06);
-      border-radius: 3px;
-      overflow: hidden;
-    }
-    .sb-progress-bar {
-      height: 100%;
-      background: linear-gradient(90deg, var(--sb-color, var(--c-gold-dark)), color-mix(in srgb, var(--sb-color, var(--c-gold)) 60%, white));
-      border-radius: 3px;
-      transition: width .6s ease;
-    }
-    .sb-progress-labels {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.7rem;
-      color: var(--c-text-dim);
-      margin-top: 3px;
-    }
-
-    /* Tokens / Marks */
-    .sb-tokens {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin-top: 6px;
-    }
-    .sb-token {
-      width: 28px; height: 28px;
-      border-radius: 50%;
-      border: 2px solid var(--c-border);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.7rem;
-      font-weight: 700;
-      color: var(--c-text-dim);
-      transition: border-color .2s;
-    }
-    .sb-token.filled {
-      border-color: var(--sb-color, var(--c-gold));
-      background: rgba(200,170,110,.15);
-      color: var(--c-gold-light);
-    }
-    .sb-token-label {
-      font-size: 0.72rem;
-      color: var(--c-text-dim);
-      margin-top: 4px;
-    }
-
-    /* Grade requirement */
-    .sb-grade {
-      display: inline-block;
-      padding: 3px 12px;
-      font-family: var(--font-title);
-      font-size: 0.85rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      background: rgba(200,170,110,.1);
-      border: 1px solid var(--c-gold-dark);
-      color: var(--c-gold-light);
-      margin-top: 6px;
-    }
-
-    /* Eternals section */
-    .sb-eternal {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 5px 0;
-      border-bottom: 1px solid rgba(30,48,72,.4);
-      font-size: 0.82rem;
-    }
+    .sb-progress-wrap { margin: 10px 0 4px; height: 6px; background: rgba(255,255,255,.06); border-radius: 3px; overflow: hidden; }
+    .sb-progress-bar { height: 100%; background: linear-gradient(90deg, var(--sb-color,var(--c-gold-dark)), color-mix(in srgb, var(--sb-color,var(--c-gold)) 60%, white)); border-radius: 3px; transition: width .6s ease; }
+    .sb-progress-labels { display: flex; justify-content: space-between; font-size: .7rem; color: var(--c-text-dim); margin-top: 3px; }
+    .sb-tokens { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+    .sb-token { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--c-border); display: flex; align-items: center; justify-content: center; font-size: .7rem; font-weight: 700; color: var(--c-text-dim); }
+    .sb-token.filled { border-color: var(--sb-color,var(--c-gold)); background: rgba(200,170,110,.15); color: var(--c-gold-light); }
+    .sb-token-label { font-size: .72rem; color: var(--c-text-dim); margin-top: 4px; }
+    .sb-grade { display: inline-block; padding: 3px 12px; font-family: var(--font-title); font-size: .85rem; font-weight: 700; letter-spacing: .1em; background: rgba(200,170,110,.1); border: 1px solid var(--c-gold-dark); color: var(--c-gold-light); margin-top: 6px; }
+    .sb-eternal { display: flex; align-items: center; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid rgba(30,48,72,.4); font-size: .82rem; }
     .sb-eternal:last-child { border-bottom: none; }
-    .sb-eternal-name { color: var(--c-text-dim); flex: 1; padding-right: 8px; font-size: 0.75rem; }
-    .sb-eternal-value { color: var(--c-blue); font-weight: 600; white-space: nowrap; }
-    .sb-eternal-milestone {
-      font-size: 0.65rem;
-      color: var(--c-text-dim);
-      margin-left: 8px;
-    }
+    .sb-eternal-name { color: var(--c-text-dim); flex: 1; padding-right: 8px; font-size: .75rem; }
+    .sb-eternal-value { color: var(--c-blue); font-weight: 600; }
 
-    /* Overlay derrière la sidebar */
-    #sb-overlay {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,.5);
-      z-index: 999;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .3s;
-    }
-    #sb-overlay.open { opacity: 1; pointer-events: all; }
+    /* OPTIONS MODAL */
+    #opt-overlay { position: fixed; inset: 0; background: rgba(1,10,19,.75); backdrop-filter: blur(4px); z-index: 2000; opacity: 0; pointer-events: none; transition: opacity .25s; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    #opt-overlay.open { opacity: 1; pointer-events: all; }
+    #opt-modal { background: linear-gradient(160deg,#0d1b2e,#091020); border: 1px solid var(--c-gold-dark); max-width: 540px; width: 100%; max-height: 85vh; overflow-y: auto; position: relative; clip-path: polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,20px 100%,0 calc(100% - 20px)); transform: scale(.95); transition: transform .25s; }
+    #opt-overlay.open #opt-modal { transform: scale(1); }
+    #opt-modal::-webkit-scrollbar { width: 4px; }
+    #opt-modal::-webkit-scrollbar-thumb { background: var(--c-border); }
+    .opt-header { padding: 20px 24px 16px; border-bottom: 1px solid var(--c-border); display: flex; align-items: center; justify-content: space-between; }
+    .opt-title { font-family: var(--font-title); font-size: .85rem; letter-spacing: .15em; color: var(--c-gold-light); text-transform: uppercase; display: flex; align-items: center; gap: 10px; }
+    .opt-title svg { width: 16px; height: 16px; fill: var(--c-gold-dark); }
+    .opt-close { background: none; border: 1px solid var(--c-border); color: var(--c-text-dim); width: 26px; height: 26px; cursor: pointer; font-size: .9rem; display: flex; align-items: center; justify-content: center; transition: all .15s; }
+    .opt-close:hover { border-color: var(--c-gold-dark); color: var(--c-gold); }
+    .opt-body { padding: 20px 24px 24px; }
+    .opt-section { margin-bottom: 24px; }
+    .opt-section:last-child { margin-bottom: 0; }
+    .opt-section-title { font-family: var(--font-title); font-size: .6rem; letter-spacing: .18em; color: var(--c-gold-dark); text-transform: uppercase; padding-bottom: 8px; border-bottom: 1px solid var(--c-border); margin-bottom: 12px; }
+    .opt-section p { font-size: .82rem; line-height: 1.7; color: var(--c-text); margin-bottom: 8px; }
+    .opt-section p:last-child { margin-bottom: 0; }
+    .opt-section a { color: var(--c-gold-dark); text-decoration: none; border-bottom: 1px solid rgba(120,90,40,.3); }
+    .opt-section a:hover { color: var(--c-gold); }
+    .opt-notice { font-size: .72rem; color: var(--c-text-dim); font-style: italic; line-height: 1.6; }
+    .opt-tag { display: inline-block; background: rgba(200,170,110,.08); border: 1px solid var(--c-gold-dark); color: var(--c-gold); font-family: var(--font-title); font-size: .55rem; letter-spacing: .1em; padding: 2px 8px; margin: 2px; vertical-align: middle; }
+    .opt-champs-count { font-family: var(--font-title); font-size: .9rem; color: var(--c-gold); }
+    .opt-contact { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: .82rem; }
 
-    @media (max-width: 600px) {
+    /* RESPONSIVE */
+    @media (max-width: 540px) {
+      .tag-region-row { grid-template-columns: 1fr; }
+      #grid { grid-template-columns: repeat(auto-fill, minmax(88px,1fr)); gap: 4px; }
       #sidebar { width: 100vw; }
     }
-
-  
-    /* ══════════════════════════════════════════════════════
-       ROLE FILTER BAR
-    ══════════════════════════════════════════════════════ */
-    #role-bar {
-      max-width: 1240px;
-      margin: 6px auto 0;
-      padding: 0 16px;
-      display: none;
-    }
-    .role-bar-inner {
-      background: var(--c-panel);
-      border: 1px solid var(--c-border);
-      border-top: none;
-      padding: 8px 14px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-    .role-btn {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: transparent;
-      border: 1px solid var(--c-border);
-      color: var(--c-text-dim);
-      padding: 5px 12px 5px 8px;
-      font-family: var(--font-title);
-      font-size: 0.6rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: all .15s;
-      clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
-    }
-    .role-btn:hover { border-color: var(--c-gold-dark); color: var(--c-gold); }
-    .role-btn.active {
-      background: rgba(200,170,110,.12);
-      border-color: var(--c-gold-dark);
-      color: var(--c-gold-light);
-    }
-    .role-btn img {
-      width: 18px; height: 18px;
-      object-fit: contain;
-      opacity: .7;
-      transition: opacity .15s;
-      filter: invert(1) sepia(1) saturate(0) brightness(0.7);
-    }
-    .role-btn:hover img,
-    .role-btn.active img {
-      opacity: 1;
-      filter: invert(1) sepia(1) saturate(3) hue-rotate(5deg) brightness(1.1);
-    }
-    .role-count {
-      font-size: 0.55rem;
-      color: var(--c-text-dim);
-      margin-left: 2px;
-    }
-    .role-btn.active .role-count { color: var(--c-gold-dark); }
-
-  
-    /* ══════════════════════════════════════════════════════
-       OPTIONS BUTTON & MODAL
-    ══════════════════════════════════════════════════════ */
-    .options-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: transparent;
-      border: 1px solid var(--c-border);
-      color: var(--c-text-dim);
-      padding: 5px 12px;
-      font-family: var(--font-title);
-      font-size: 0.6rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: all .2s;
-      clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 7px, 100% 100%, 7px 100%, 0 calc(100% - 7px));
-      margin-top: 12px;
-    }
-    .options-btn:hover {
-      border-color: var(--c-gold-dark);
-      color: var(--c-gold);
-    }
-    .options-btn svg {
-      width: 12px; height: 12px;
-      fill: currentColor;
-      transition: transform .4s;
-    }
-    .options-btn:hover svg { transform: rotate(60deg); }
-
-    /* Modal overlay */
-    #opt-overlay {
-      position: fixed; inset: 0;
-      background: rgba(1,10,19,.75);
-      backdrop-filter: blur(4px);
-      z-index: 2000;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .25s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    #opt-overlay.open {
-      opacity: 1;
-      pointer-events: all;
-    }
-
-    #opt-modal {
-      background: linear-gradient(160deg, #0d1b2e 0%, #091020 100%);
-      border: 1px solid var(--c-gold-dark);
-      max-width: 540px;
-      width: 100%;
-      max-height: 85vh;
-      overflow-y: auto;
-      position: relative;
-      clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
-      transform: scale(.95);
-      transition: transform .25s;
-    }
-    #opt-overlay.open #opt-modal { transform: scale(1); }
-
-    #opt-modal::-webkit-scrollbar { width: 4px; }
-    #opt-modal::-webkit-scrollbar-track { background: transparent; }
-    #opt-modal::-webkit-scrollbar-thumb { background: var(--c-border); }
-
-    .opt-header {
-      padding: 20px 24px 16px;
-      border-bottom: 1px solid var(--c-border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .opt-title {
-      font-family: var(--font-title);
-      font-size: 0.85rem;
-      letter-spacing: 0.15em;
-      color: var(--c-gold-light);
-      text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .opt-title svg { width: 16px; height: 16px; fill: var(--c-gold-dark); }
-    .opt-close {
-      background: none;
-      border: 1px solid var(--c-border);
-      color: var(--c-text-dim);
-      width: 26px; height: 26px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      display: flex; align-items: center; justify-content: center;
-      transition: all .15s;
-    }
-    .opt-close:hover { border-color: var(--c-gold-dark); color: var(--c-gold); }
-
-    .opt-body { padding: 20px 24px 24px; }
-
-    .opt-section {
-      margin-bottom: 24px;
-    }
-    .opt-section:last-child { margin-bottom: 0; }
-    .opt-section-title {
-      font-family: var(--font-title);
-      font-size: 0.6rem;
-      letter-spacing: 0.18em;
-      color: var(--c-gold-dark);
-      text-transform: uppercase;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--c-border);
-      margin-bottom: 12px;
-    }
-    .opt-section p {
-      font-size: 0.82rem;
-      line-height: 1.7;
-      color: var(--c-text);
-      margin-bottom: 8px;
-    }
-    .opt-section p:last-child { margin-bottom: 0; }
-    .opt-section a {
-      color: var(--c-gold-dark);
-      text-decoration: none;
-      border-bottom: 1px solid rgba(120,90,40,.3);
-      transition: color .15s, border-color .15s;
-    }
-    .opt-section a:hover { color: var(--c-gold); border-color: var(--c-gold-dark); }
-    .opt-notice {
-      font-size: 0.72rem;
-      color: var(--c-text-dim);
-      font-style: italic;
-      line-height: 1.6;
-    }
-    .opt-tag {
-      display: inline-block;
-      background: rgba(200,170,110,.08);
-      border: 1px solid var(--c-gold-dark);
-      color: var(--c-gold);
-      font-family: var(--font-title);
-      font-size: 0.55rem;
-      letter-spacing: 0.1em;
-      padding: 2px 8px;
-      margin: 2px 2px;
-      vertical-align: middle;
-    }
-    .opt-contact {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 8px;
-      font-size: 0.82rem;
-    }
-    .opt-contact a { font-size: 0.82rem; }
-    .opt-champs-count {
-      font-family: var(--font-title);
-      font-size: 0.9rem;
-      color: var(--c-gold);
-      letter-spacing: 0.05em;
-    }
-
   </style>
 </head>
 <body>
 
-<!-- ═══════════════════════ HEADER ═══════════════════════ -->
 <header>
   <p class="header-eyebrow">League of Legends</p>
   <h1>Masteries Checker</h1>
-  <p class="header-sub">League of Legends — Champion Mastery Tracker</p>
+  <p class="header-sub">Champion Mastery Tracker</p>
 </header>
 
-<!-- ═══════════════════════ SEARCH ═══════════════════════ -->
 <div class="search-section">
   <div class="search-card">
-
-    <!-- Summoner preview -->
-    <div class="summoner-preview" id="summoner-preview">
-      <div class="hex-icon" id="hex-icon">
+    <div class="summoner-preview">
+      <div class="hex-icon">
         <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <polygon points="32,2 60,17.5 60,46.5 32,62 4,46.5 4,17.5"
-            fill="none" stroke="#785a28" stroke-width="1.5"/>
+          <polygon points="32,2 60,17.5 60,46.5 32,62 4,46.5 4,17.5" fill="none" stroke="#785a28" stroke-width="1.5"/>
         </svg>
-        <img id="profile-icon" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/1.png" alt="icon" />
+        <img id="profile-icon" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/1.png" alt="icon"/>
         <span class="hex-level" id="sum-level">—</span>
       </div>
       <div class="summoner-info" id="sum-info">
         <div class="summoner-placeholder">Entrez votre Riot ID</div>
       </div>
     </div>
-
-    <!-- Game Name -->
     <div class="fields-row">
       <div class="field-group">
         <span class="field-label">Game Name</span>
@@ -970,8 +244,6 @@
         <input type="text" id="inp-tag" placeholder="EUW" style="width:80px" maxlength="8" autocomplete="off"/>
       </div>
     </div>
-
-    <!-- Region -->
     <div class="tag-region-row">
       <div class="field-group">
         <span class="field-label">Région</span>
@@ -991,27 +263,15 @@
       </div>
       <div class="field-group" style="justify-content:flex-end">
         <span class="field-label">&nbsp;</span>
-        <button class="btn-search" id="btn-search" onclick="doSearch()">
-          ⚔ Analyser les Masteries
-        </button>
+        <button class="btn-search" id="btn-search" onclick="doSearch()">⚔ Analyser les Masteries</button>
       </div>
     </div>
-
   </div>
 </div>
 
-<!-- ═══════════════════════ ERROR ═══════════════════════ -->
-<div class="error-bar" id="error-bar">
-  <div class="error-inner" id="error-msg"></div>
-</div>
+<div class="error-bar" id="error-bar"><div class="error-inner" id="error-msg"></div></div>
+<div id="loading"><div class="spinner-hex"></div><p class="loading-text">Chargement des masteries…</p></div>
 
-<!-- ═══════════════════════ LOADING ═══════════════════════ -->
-<div id="loading">
-  <div class="spinner-hex"></div>
-  <p class="loading-text">Chargement des masteries…</p>
-</div>
-
-<!-- ═══════════════════════ CONTROLS ═══════════════════════ -->
 <div id="controls">
   <div class="controls-inner">
     <span class="ctrl-label">Afficher</span>
@@ -1019,17 +279,8 @@
     <button class="filter-btn" onclick="setFilter('played',this)">Joués</button>
     <button class="filter-btn" onclick="setFilter('unplayed',this)">Non joués</button>
     <button class="filter-btn" id="btn-low" onclick="setFilter('low',this)">
-      &lt; <input
-        class="pts-threshold"
-        id="pts-threshold"
-        type="number"
-        value="5000"
-        min="0"
-        onclick="event.stopPropagation()"
-        onchange="updateThresholdLabel()"
-      /> pts
+      &lt; <input class="pts-threshold" id="pts-threshold" type="number" value="5000" min="0" onclick="event.stopPropagation()" onchange="updateThresholdLabel()"/> pts
     </button>
-
     <div class="ctrl-sort-group">
       <span class="ctrl-label">Trier</span>
       <select class="sort-sel" id="sort-sel" onchange="renderGrid()">
@@ -1044,842 +295,404 @@
   </div>
 </div>
 
-
-<!-- ═══════════════════════ ROLE BAR ═══════════════════════ -->
 <div id="role-bar">
   <div class="role-bar-inner">
     <span class="ctrl-label" style="margin-right:4px">Rôle</span>
-    <button class="role-btn active" data-role="all" onclick="setRole('all',this)">
-      <img src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-fill.png" alt="Tous"/>
-      Tous
+    <button class="role-btn active" onclick="setRole('all',this)">
+      <img src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-fill.png" alt="Tous"/> Tous
     </button>
-    <button class="role-btn" data-role="top" onclick="setRole('top',this)">
-      <img src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-top.png" alt="Top"/>
-      Top <span class="role-count" id="rc-top"></span>
+    <button class="role-btn" onclick="setRole('top',this)">
+      <img src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-top.png" alt="Top"/> Top <span class="role-count" id="rc-top"></span>
     </button>
-    <button class="role-btn" data-role="jungle" onclick="setRole('jungle',this)">
-      <img src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-jungle.png" alt="Jungle"/>
-      Jungle <span class="role-count" id="rc-jungle"></span>
+    <button class="role-btn" onclick="setRole('jungle',this)">
+      <img src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-jungle.png" alt="Jungle"/> Jungle <span class="role-count" id="rc-jungle"></span>
     </button>
-    <button class="role-btn" data-role="mid" onclick="setRole('mid',this)">
-      <img src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-middle.png" alt="Mid"/>
-      Mid <span class="role-count" id="rc-mid"></span>
+    <button class="role-btn" onclick="setRole('mid',this)">
+      <img src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-middle.png" alt="Mid"/> Mid <span class="role-count" id="rc-mid"></span>
     </button>
-    <button class="role-btn" data-role="bot" onclick="setRole('bot',this)">
-      <img src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-bottom.png" alt="Bot"/>
-      Bot <span class="role-count" id="rc-bot"></span>
+    <button class="role-btn" onclick="setRole('bot',this)">
+      <img src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-bottom.png" alt="Bot"/> Bot <span class="role-count" id="rc-bot"></span>
     </button>
-    <button class="role-btn" data-role="support" onclick="setRole('support',this)">
-      <img src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-utility.png" alt="Support"/>
-      Support <span class="role-count" id="rc-support"></span>
+    <button class="role-btn" onclick="setRole('support',this)">
+      <img src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-utility.png" alt="Support"/> Support <span class="role-count" id="rc-support"></span>
     </button>
   </div>
 </div>
 
-<!-- ═══════════════════════ GRID ═══════════════════════ -->
 <div id="grid"></div>
 
-<!-- ═══════════════════════ FOOTER ═══════════════════════ -->
 <footer>
-  <div>
-    Masteries Checker n'est pas approuvé par Riot Games et ne reflète pas les points de vue de Riot Games, Inc. —
-    <a href="https://lolcompatibility.com" target="_blank">lolcompatibility.com</a> · PakaRisu
-  </div>
+  <div>Masteries Checker n'est pas approuvé par Riot Games et ne reflète pas les points de vue de Riot Games, Inc. — <a href="https://lolcompatibility.com" target="_blank">lolcompatibility.com</a> · PakaRisu</div>
   <button class="options-btn" onclick="openOptions()">
-    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.92c.04-.34.07-.68.07-1.08s-.03-.74-.07-1.08l2.32-1.81c.21-.16.27-.45.13-.69l-2.2-3.8c-.13-.24-.42-.32-.66-.24l-2.74 1.1c-.57-.44-1.18-.8-1.86-1.08l-.42-2.9A.488.488 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.42 2.9c-.68.28-1.29.64-1.86 1.08L4.49 5.3c-.25-.08-.54 0-.67.24l-2.2 3.8c-.13.24-.07.53.13.69l2.33 1.81C4.03 11.26 4 11.6 4 12s.03.74.07 1.08L1.75 14.9c-.21.16-.27.45-.13.69l2.2 3.8c.13.24.42.32.66.24l2.74-1.1c.57.44 1.18.8 1.86 1.08l.42 2.9c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.42-2.9c.68-.28 1.29-.64 1.86-1.08l2.74 1.1c.25.08.54 0 .67-.24l2.2-3.8c.13-.24.07-.53-.13-.69l-2.32-1.81z"/>
-    </svg>
+    <svg viewBox="0 0 24 24"><path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.92c.04-.34.07-.68.07-1.08s-.03-.74-.07-1.08l2.32-1.81c.21-.16.27-.45.13-.69l-2.2-3.8c-.13-.24-.42-.32-.66-.24l-2.74 1.1c-.57-.44-1.18-.8-1.86-1.08l-.42-2.9A.488.488 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.42 2.9c-.68.28-1.29.64-1.86 1.08L4.49 5.3c-.25-.08-.54 0-.67.24l-2.2 3.8c-.13.24-.07.53.13.69l2.33 1.81C4.03 11.26 4 11.6 4 12s.03.74.07 1.08L1.75 14.9c-.21.16-.27.45-.13.69l2.2 3.8c.13.24.42.32.66.24l2.74-1.1c.57.44 1.18.8 1.86 1.08l.42 2.9c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.42-2.9c.68-.28 1.29-.64 1.86-1.08l2.74 1.1c.25.08.54 0 .67-.24l2.2-3.8c.13-.24.07-.53-.13-.69l-2.32-1.81z"/></svg>
     ⚙ Options
   </button>
 </footer>
 
-<!-- ═══════════════════════ OPTIONS MODAL ═══════════════════════ -->
-<div id="opt-overlay" onclick="handleOptOverlayClick(event)">
+<!-- OPTIONS MODAL -->
+<div id="opt-overlay" onclick="if(event.target===this)closeOptions()">
   <div id="opt-modal">
     <div class="opt-header">
-      <div class="opt-title">
-        <svg viewBox="0 0 24 24"><path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.92c.04-.34.07-.68.07-1.08s-.03-.74-.07-1.08l2.32-1.81c.21-.16.27-.45.13-.69l-2.2-3.8c-.13-.24-.42-.32-.66-.24l-2.74 1.1c-.57-.44-1.18-.8-1.86-1.08l-.42-2.9A.488.488 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.42 2.9c-.68.28-1.29.64-1.86 1.08L4.49 5.3c-.25-.08-.54 0-.67.24l-2.2 3.8c-.13.24-.07.53.13.69l2.33 1.81C4.03 11.26 4 11.6 4 12s.03.74.07 1.08L1.75 14.9c-.21.16-.27.45-.13.69l2.2 3.8c.13.24.42.32.66.24l2.74-1.1c.57.44 1.18.8 1.86 1.08l.42 2.9c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.42-2.9c.68-.28 1.29-.64 1.86-1.08l2.74 1.1c.25.08.54 0 .67-.24l2.2-3.8c.13-.24.07-.53-.13-.69l-2.32-1.81z"/></svg>
-        Options
-      </div>
+      <div class="opt-title"><svg viewBox="0 0 24 24"><path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.92c.04-.34.07-.68.07-1.08s-.03-.74-.07-1.08l2.32-1.81c.21-.16.27-.45.13-.69l-2.2-3.8c-.13-.24-.42-.32-.66-.24l-2.74 1.1c-.57-.44-1.18-.8-1.86-1.08l-.42-2.9A.488.488 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.42 2.9c-.68.28-1.29.64-1.86 1.08L4.49 5.3c-.25-.08-.54 0-.67.24l-2.2 3.8c-.13.24-.07.53.13.69l2.33 1.81C4.03 11.26 4 11.6 4 12s.03.74.07 1.08L1.75 14.9c-.21.16-.27.45-.13.69l2.2 3.8c.13.24.42.32.66.24l2.74-1.1c.57.44 1.18.8 1.86 1.08l.42 2.9c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.42-2.9c.68-.28 1.29-.64 1.86-1.08l2.74 1.1c.25.08.54 0 .67-.24l2.2-3.8c.13-.24.07-.53-.13-.69l-2.32-1.81z"/></svg> Options</div>
       <button class="opt-close" onclick="closeOptions()">✕</button>
     </div>
-
     <div class="opt-body">
-
-      <!-- Mentions légales -->
       <div class="opt-section">
         <div class="opt-section-title">📜 Mentions légales</div>
-        <p>
-          <strong>Masteries Checker</strong> est une application tierce non officielle, créée par un fan de League of Legends.
-          Elle n'est pas approuvée par Riot Games et ne reflète pas les points de vue ou opinions de Riot Games
-          ou de quiconque impliqué officiellement dans la production ou la gestion des propriétés de Riot Games.
-        </p>
-        <p>
-          Riot Games, League of Legends, et toutes les propriétés associées sont des marques déposées
-          de <a href="https://www.riotgames.com" target="_blank">Riot Games, Inc.</a>
-        </p>
-        <p>
-          Cette application utilise l'API officielle Riot Games conformément aux
-          <a href="https://developer.riotgames.com/policies/general" target="_blank">conditions d'utilisation de l'API Riot Games</a>.
-          Les données de maîtrise, icônes et assets de champions sont fournis via
-          <a href="https://developer.riotgames.com/docs/lol#data-dragon" target="_blank">Data Dragon</a> et
-          <a href="https://communitydragon.org" target="_blank">Community Dragon</a>.
-        </p>
-        <p class="opt-notice">
-          Masteries Checker ne stocke aucune donnée personnelle. Les requêtes sont effectuées en temps réel
-          via l'API Riot Games et ne sont pas conservées côté serveur.
-        </p>
+        <p><strong>Masteries Checker</strong> est une application tierce non officielle, créée par un fan de League of Legends. Elle n'est pas approuvée par Riot Games et ne reflète pas les points de vue ou opinions de Riot Games ou de quiconque impliqué officiellement dans la production ou la gestion des propriétés de Riot Games.</p>
+        <p>Riot Games, League of Legends, et toutes les propriétés associées sont des marques déposées de <a href="https://www.riotgames.com" target="_blank">Riot Games, Inc.</a></p>
+        <p>Cette application utilise l'API officielle Riot Games conformément aux <a href="https://developer.riotgames.com/policies/general" target="_blank">conditions d'utilisation de l'API Riot Games</a>. Les données sont fournies via <a href="https://developer.riotgames.com/docs/lol#data-dragon" target="_blank">Data Dragon</a> et <a href="https://communitydragon.org" target="_blank">Community Dragon</a>.</p>
+        <p class="opt-notice">Masteries Checker ne stocke aucune donnée personnelle. Les requêtes sont effectuées en temps réel et ne sont pas conservées côté serveur.</p>
       </div>
-
-      <!-- Endpoints utilisés -->
       <div class="opt-section">
         <div class="opt-section-title">🔌 API utilisées</div>
-        <p>Cette application utilise les endpoints Riot Games suivants :</p>
-        <p>
-          <span class="opt-tag">ACCOUNT-V1</span> Résolution du Riot ID → PUUID<br/>
-          <span class="opt-tag">SUMMONER-V4</span> Icône de profil et niveau d'invocateur<br/>
-          <span class="opt-tag">CHAMPION-MASTERY-V4</span> Maîtrises de champion par PUUID<br/>
-          <span class="opt-tag">DATA DRAGON</span> Données statiques des champions (noms, images, version)<br/>
-          <span class="opt-tag">COMMUNITY DRAGON</span> Icônes de positions (Top, Jungle, Mid, Bot, Support)
-        </p>
+        <p><span class="opt-tag">ACCOUNT-V1</span> Résolution du Riot ID → PUUID<br/>
+        <span class="opt-tag">SUMMONER-V4</span> Icône de profil et niveau<br/>
+        <span class="opt-tag">CHAMPION-MASTERY-V4</span> Maîtrises par PUUID<br/>
+        <span class="opt-tag">DATA DRAGON</span> Données statiques des champions<br/>
+        <span class="opt-tag">COMMUNITY DRAGON</span> Icônes de positions</p>
       </div>
-
-      <!-- Champions en jeu -->
       <div class="opt-section">
         <div class="opt-section-title">🎯 Champions dans le jeu</div>
-        <p>
-          Le nombre de champions est récupéré dynamiquement depuis la dernière version de Data Dragon au chargement de la page.
-          Aucune valeur n'est codée en dur.
-        </p>
-        <p>
-          Version DDragon détectée : <span class="opt-champs-count" id="opt-dd-version">—</span>
-          &nbsp;·&nbsp; Champions : <span class="opt-champs-count" id="opt-champ-count">—</span>
-        </p>
+        <p>Récupérés dynamiquement depuis la dernière version Data Dragon. Aucune valeur codée en dur.</p>
+        <p>Version DDragon : <span class="opt-champs-count" id="opt-dd-version">—</span> · Champions : <span class="opt-champs-count" id="opt-champ-count">—</span></p>
       </div>
-
-      <!-- Contact -->
       <div class="opt-section">
         <div class="opt-section-title">✉ Contact</div>
-        <div class="opt-contact">
-          <span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c1adaeadefa2aeacb1a0b5a8a3a8ada8b5b881a6aca0a8adefa2aeac">[email&#160;protected]</a></span>
-        </div>
-        <div class="opt-contact" style="margin-top:4px;">
-          <span>— PakaRisu &nbsp;·&nbsp;
-            <a href="https://lolcompatibility.com" target="_blank">lolcompatibility.com</a>
-          </span>
-        </div>
+        <div class="opt-contact"><span>lol.compatibility@gmail.com</span></div>
+        <div class="opt-contact" style="margin-top:4px;"><span>— PakaRisu · <a href="https://lolcompatibility.com" target="_blank">lolcompatibility.com</a></span></div>
       </div>
-
     </div>
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-/* ═══════════════════════════════════════════════════════════════
-   CONFIG & STATE
-═══════════════════════════════════════════════════════════════ */
-const DD = "https://ddragon.leagueoflegends.com";
-let ddVersion  = null;
-let champMap   = {};     // id → { name, img }
-let allData    = [];     // { id, name, img, points, level }
-let maxPts     = 1;
-let curFilter  = 'all';
+<!-- SIDEBAR -->
+<div id="sb-overlay" onclick="closeSidebar()"></div>
+<div id="sidebar">
+  <button class="sb-close" onclick="closeSidebar()">✕</button>
+  <div class="sb-header">
+    <img class="sb-champ-img" id="sb-img" src="" alt=""/>
+    <div class="sb-champ-title">
+      <div class="sb-champ-name" id="sb-name">—</div>
+      <div class="sb-level-badge" id="sb-level-badge">—</div>
+      <div class="sb-last-played" id="sb-last-played"></div>
+    </div>
+  </div>
+  <div class="sb-body" id="sb-body"></div>
+</div>
 
-/* ═══════════════════════════════════════════════════════════════
-   DDRAGON
-═══════════════════════════════════════════════════════════════ */
+<script>
+const DD = "https://ddragon.leagueoflegends.com";
+let ddVersion = null;
+let champMap  = {};
+let allData   = [];
+let maxPts    = 1;
+let curFilter = 'all';
+let curRole   = 'all';
+let eternalsByChamp = {};
+
+/* ── DDragon ── */
 async function getDDVersion() {
   if (ddVersion) return ddVersion;
   const r = await fetch(`${DD}/api/versions.json`);
-  const v = await r.json();
-  ddVersion = v[0];
+  ddVersion = (await r.json())[0];
   return ddVersion;
 }
-
 async function buildChampionMap(version) {
   const r = await fetch(`${DD}/cdn/${version}/data/en_US/champion.json`);
   const d = await r.json();
   const map = {};
   for (const c of Object.values(d.data)) {
-    map[parseInt(c.key)] = {
-      name: c.name,
-      img: `${DD}/cdn/${version}/img/champion/${c.id}.png`,
-      tags: c.tags || [],   // ex: ["Fighter","Tank"], ["Mage","Support"]...
-      champId: c.id,
-    };
+    map[parseInt(c.key)] = { name: c.name, img: `${DD}/cdn/${version}/img/champion/${c.id}.png`, tags: c.tags||[], champId: c.id };
   }
   return map;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   SEARCH
-═══════════════════════════════════════════════════════════════ */
+/* ── Search ── */
 async function doSearch() {
   const name   = document.getElementById('inp-name').value.trim();
-  const tag    = document.getElementById('inp-tag').value.trim().replace(/^#/, '');
+  const tag    = document.getElementById('inp-tag').value.trim().replace(/^#/,'');
   const region = document.getElementById('inp-region').value;
-
-  hideError();
-  clearResults();
-
+  hideError(); clearResults();
   if (!name) { showError("Entrez un Game Name."); return; }
   if (!tag)  { showError("Entrez un Tag (ex: EUW, FR1…)."); return; }
-
-  setBusy(true);
-  showLoading(true);
-
+  setBusy(true); showLoading(true);
   try {
     const [version, apiResp] = await Promise.all([
       getDDVersion(),
       fetch(`/api/mastery?gameName=${encodeURIComponent(name)}&tagLine=${encodeURIComponent(tag)}&region=${region}`)
         .then(async r => {
           const text = await r.text();
-          console.log('[API] status:', r.status, 'url:', r.url);
-          console.log('[API] raw response:', text.substring(0, 300));
           try { return JSON.parse(text); }
-          catch(e) { return { error: `HTTP ${r.status} — Réponse non-JSON : ${text.substring(0, 120)}` }; }
+          catch(e) { return { error: `HTTP ${r.status} — Réponse non-JSON : ${text.substring(0,120)}` }; }
         })
     ]);
-
-    if (apiResp.error) {
-      showError(apiResp.error);
-      return;
-    }
-
-    // Update profile icon
+    if (apiResp.error) { showError(apiResp.error); return; }
     updateProfileIcon(apiResp, region, version);
-
-    // Build champion map if needed
     champMap = await buildChampionMap(version);
-
-    // Build masteryMap
     const masteryMap = {};
     for (const m of apiResp.masteries) masteryMap[m.championId] = m;
-
-    // Merge all champs
     allData = Object.entries(champMap).map(([idStr, c]) => {
       const id = parseInt(idStr);
       const m  = masteryMap[id];
-      return {
-        id,
-        name:   c.name,
-        img:    c.img,
-        tags:   c.tags || [],
-        roles:  getChampionRoles(c.champId, c.tags || []),
-        points: m?.championPoints ?? 0,
-        level:  m?.championLevel  ?? 0,
-        mastery: m ?? null,
-      };
+      return { id, name: c.name, img: c.img, tags: c.tags||[], roles: getChampionRoles(c.champId, c.tags||[]), points: m?.championPoints??0, level: m?.championLevel??0, mastery: m??null };
     });
-
-    // Mettre à jour les compteurs de rôles
     updateRoleCounts();
-
     maxPts = Math.max(...allData.map(d => d.points), 1);
-
     document.getElementById('controls').style.display = 'block';
     document.getElementById('role-bar').style.display = 'block';
     updateStats();
     renderGrid();
-
   } catch(e) {
-    console.error(e);
     showError(`Erreur réseau ou serveur : ${e.message}`);
   } finally {
-    setBusy(false);
-    showLoading(false);
+    setBusy(false); showLoading(false);
   }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   PROFILE ICON UPDATE
-═══════════════════════════════════════════════════════════════ */
+/* ── Profile ── */
 function updateProfileIcon(data, region, version) {
-  const iconUrl = `${DD}/cdn/${version}/img/profileicon/${data.profileIconId}.png`;
-  document.getElementById('profile-icon').src = iconUrl;
+  document.getElementById('profile-icon').src = `${DD}/cdn/${version}/img/profileicon/${data.profileIconId}.png`;
   document.getElementById('sum-level').textContent = data.summonerLevel || '—';
-
-  const regionLabel = {
-    euw1:'EUW', eun1:'EUNE', na1:'NA', kr:'KR', br1:'BR',
-    la1:'LAN', la2:'LAS', jp1:'JP', tr1:'TR', ru:'RU', oc1:'OCE',
-  }[region] || region.toUpperCase();
-
-  document.getElementById('sum-info').innerHTML = `
-    <div class="summoner-name">${escHtml(data.gameName)}<span class="summoner-tag"> #${escHtml(data.tagLine)}</span></div>
-    <span class="summoner-region-badge">${regionLabel}</span>
-  `;
+  const regionLabel = {euw1:'EUW',eun1:'EUNE',na1:'NA',kr:'KR',br1:'BR',la1:'LAN',la2:'LAS',jp1:'JP',tr1:'TR',ru:'RU',oc1:'OCE'}[region]||region.toUpperCase();
+  document.getElementById('sum-info').innerHTML = `<div class="summoner-name">${esc(data.gameName)}<span class="summoner-tag"> #${esc(data.tagLine)}</span></div><span class="summoner-region-badge">${regionLabel}</span>`;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   RENDER
-═══════════════════════════════════════════════════════════════ */
+/* ── Render ── */
 function getFiltered() {
-  const threshold = parseInt(document.getElementById('pts-threshold').value) || 5000;
+  const threshold = parseInt(document.getElementById('pts-threshold').value)||5000;
   let data;
-  switch (curFilter) {
+  switch(curFilter) {
     case 'played':   data = allData.filter(d => d.points > 0); break;
     case 'unplayed': data = allData.filter(d => d.points === 0); break;
     case 'low':      data = allData.filter(d => d.points < threshold); break;
     default:         data = [...allData];
   }
-  // Filtre rôle
-  if (curRole !== 'all') {
-    data = data.filter(d => d.roles.includes(curRole));
-  }
+  if (curRole !== 'all') data = data.filter(d => d.roles.includes(curRole));
   return data;
 }
-
 function getSorted(data) {
   const s = document.getElementById('sort-sel').value;
-  return data.sort((a, b) => {
-    if (s === 'pts-desc')   return b.points - a.points;
-    if (s === 'pts-asc')    return a.points - b.points;
-    if (s === 'name-asc')   return a.name.localeCompare(b.name);
-    if (s === 'name-desc')  return b.name.localeCompare(a.name);
-    if (s === 'level-desc') return (b.level - a.level) || (b.points - a.points);
+  return data.sort((a,b) => {
+    if (s==='pts-desc')   return b.points-a.points;
+    if (s==='pts-asc')    return a.points-b.points;
+    if (s==='name-asc')   return a.name.localeCompare(b.name);
+    if (s==='name-desc')  return b.name.localeCompare(a.name);
+    if (s==='level-desc') return (b.level-a.level)||(b.points-a.points);
     return 0;
   });
 }
-
 function renderGrid() {
   const grid = document.getElementById('grid');
   grid.innerHTML = '';
-
   const data = getSorted(getFiltered());
   updateStats(data.length);
-
   if (!data.length) {
     grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 0;color:var(--c-text-dim);font-style:italic;">Aucun champion dans cette sélection.</div>';
     return;
   }
-
   const frag = document.createDocumentFragment();
   data.forEach((d, i) => {
     const card = document.createElement('div');
-    const lvl = d.level; // niveau réel, pas tronqué à 10
+    const lvl = d.level;
     card.className = 'champ-card' + (lvl >= 5 ? ' glowing' : '');
-    card.setAttribute('data-level', Math.min(lvl, 10)); // pour grayscale niveau 0
-    card.style.animationDelay = `${Math.min(i * 8, 320)}ms`;
-    card.style.cursor = 'pointer';
-
-    const lvlColor = getLevelColor(lvl);
-    const glowSize = lvl >= 10 ? '16px' : lvl >= 7 ? '10px' : lvl >= 5 ? '6px' : '0px';
-    card.style.setProperty('--lc', lvlColor);
-    card.style.setProperty('--lc-glow-size', glowSize);
-
-    const ptsDisplay = d.points > 0
-      ? d.points.toLocaleString('fr-FR') + ' pts'
-      : '—';
-
+    card.setAttribute('data-level', Math.min(lvl, 10));
+    card.style.animationDelay = `${Math.min(i*8,320)}ms`;
+    const lc = getLevelColor(lvl);
+    const gs = lvl>=10?'16px':lvl>=7?'10px':lvl>=5?'6px':'0px';
+    card.style.setProperty('--lc', lc);
+    card.style.setProperty('--lc-glow-size', gs);
     card.innerHTML = `
       <div class="champ-img-wrap">
-        <img class="champ-img" src="${d.img}" alt="${escHtml(d.name)}" loading="lazy"/>
+        <img class="champ-img" src="${d.img}" alt="${esc(d.name)}" loading="lazy"/>
         <div class="champ-base-overlay"></div>
       </div>
       <div class="champ-info">
-        <div class="champ-name">${escHtml(d.name)}</div>
-        <div class="champ-pts${d.points === 0 ? ' zero' : ''}">${ptsDisplay}</div>
-        <div class="champ-level-label" style="color:${getLevelTextColor(lvl)}">
-          ${lvl > 0 ? 'Niveau ' + lvl : 'Non joué'}
-        </div>
-      </div>
-    `;
-    const champId = d.id;
-    card.addEventListener('click', () => {
-      const fresh = allData.find(x => x.id === champId);
-      if (fresh) openSidebar(fresh);
-    });
+        <div class="champ-name">${esc(d.name)}</div>
+        <div class="champ-pts${d.points===0?' zero':''}">${d.points>0?d.points.toLocaleString('fr-FR')+' pts':'—'}</div>
+        <div class="champ-level-label" style="color:${getLevelTextColor(lvl)}">${lvl>0?'Niveau '+lvl:'Non joué'}</div>
+      </div>`;
+    const cid = d.id;
+    card.addEventListener('click', () => { const f=allData.find(x=>x.id===cid); if(f) openSidebar(f); });
     frag.appendChild(card);
   });
   grid.appendChild(frag);
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   CONTROLS
-═══════════════════════════════════════════════════════════════ */
+/* ── Controls ── */
 function setFilter(f, el) {
   curFilter = f;
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
   renderGrid();
 }
-
-function updateThresholdLabel() {
-  if (curFilter === 'low') renderGrid();
-}
-
-function updateStats(shown) {
-  const total   = allData.length;
-  const played  = allData.filter(d => d.points > 0).length;
-  const display = shown ?? getFiltered().length;
-  document.getElementById('ctrl-stats').innerHTML =
-    `<strong>${display}</strong> affichés — <strong>${played}</strong>/<strong>${total}</strong> joués`;
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   UI HELPERS
-═══════════════════════════════════════════════════════════════ */
-function showError(msg) {
-  const bar = document.getElementById('error-bar');
-  document.getElementById('error-msg').textContent = '⚠ ' + msg;
-  bar.style.display = 'block';
-}
-function hideError() {
-  document.getElementById('error-bar').style.display = 'none';
-}
-function showLoading(show) {
-  document.getElementById('loading').style.display = show ? 'block' : 'none';
-}
-function clearResults() {
-  document.getElementById('grid').innerHTML = '';
-  document.getElementById('controls').style.display = 'none';
-}
-function setBusy(b) {
-  document.getElementById('btn-search').disabled = b;
-}
-function fmtPts(n) {
-  if (n >= 1_000_000) return (n/1_000_000).toFixed(2) + 'M';
-  if (n >= 1_000)     return Math.round(n/1_000) + 'k';
-  return n.toLocaleString('fr-FR');
-}
-function escHtml(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   KEYBOARD
-═══════════════════════════════════════════════════════════════ */
-['inp-name','inp-tag'].forEach(id => {
-  document.getElementById(id).addEventListener('keydown', e => {
-    if (e.key === 'Enter') doSearch();
-  });
-});
-
-// Auto-focus tag when # typed in name field
-document.getElementById('inp-name').addEventListener('input', e => {
-  if (e.target.value.includes('#')) {
-    const [n, t] = e.target.value.split('#');
-    e.target.value = n;
-    const tagInput = document.getElementById('inp-tag');
-    tagInput.value = t || '';
-    tagInput.focus();
-  }
-});
-
-
-/* ═══════════════════════════════════════════════════════════════
-   ROLE FILTERING
-═══════════════════════════════════════════════════════════════ */
-let curRole = 'all';
-
-function setRole(role, el) {
-  curRole = role;
+function setRole(r, el) {
+  curRole = r;
   document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
-  renderGrid();
-  updateStats();
+  renderGrid(); updateStats();
 }
-
+function updateThresholdLabel() { if(curFilter==='low') renderGrid(); }
+function updateStats(shown) {
+  const total  = allData.length;
+  const played = allData.filter(d=>d.points>0).length;
+  const disp   = shown??getFiltered().length;
+  document.getElementById('ctrl-stats').innerHTML = `<strong>${disp}</strong> affichés — <strong>${played}</strong>/<strong>${total}</strong> joués`;
+}
 function updateRoleCounts() {
-  const roles = ['top','jungle','mid','bot','support'];
-  for (const r of roles) {
-    const el = document.getElementById('rc-' + r);
-    if (el) el.textContent = '(' + allData.filter(d => d.roles.includes(r)).length + ')';
-  }
+  ['top','jungle','mid','bot','support'].forEach(r => {
+    const el = document.getElementById('rc-'+r);
+    if(el) el.textContent = '('+allData.filter(d=>d.roles.includes(r)).length+')';
+  });
 }
 
-/*
-  Mapping champion → positions principal(es).
-  DDragon donne des "tags" génériques (Fighter, Mage, Tank…) mais pas les lanes.
-  Ce mapping communautaire couvre tous les champions actuels avec leurs positions principales.
-  Source : wiki LoL + meta 2025.
-  Un champion peut appartenir à plusieurs rôles (ex: Teemo: top+bot).
-*/
-const CHAMP_ROLES = {
-  // TOP
-  Aatrox:['top'], Camille:['top'], Cho:['top','jungle'], Darius:['top'],
-  DrMundo:['top','jungle'], Fiora:['top'], Gangplank:['top'], Garen:['top'],
-  Gnar:['top'], Gragas:['top','jungle'], Gwen:['top'], Illaoi:['top'],
-  Irelia:['top','mid'], Jax:['top','jungle'], Jayce:['top','mid'], Kayle:['top'],
-  Kennen:['top'], Kled:['top'], Malphite:['top'], Maokai:['top','jungle','support'],
-  Mordekaiser:['top'], Nasus:['top'], Olaf:['top','jungle'], Ornn:['top'],
-  Pantheon:['top','support'], Poppy:['top','jungle'], Quinn:['top'],
-  Renekton:['top'], Riven:['top'], Rumble:['top'], Ryze:['top','mid'],
-  Sett:['top'], Shen:['top','support'], Singed:['top'], Sion:['top'],
-  Teemo:['top','bot'], Trundle:['top','jungle'], Tryndamere:['top'],
-  Urgot:['top'], Vander:['top'], Vayne:['top','bot'], VoliBear:['top','jungle'],
-  Warwick:['top','jungle'], Wukong:['top','jungle'], Yasuo:['top','mid'],
-  Yone:['top','mid'], Yorick:['top'], Zac:['jungle','top'],
-
-  // JUNGLE
-  Amumu:['jungle','support'], BelVeth:['jungle'], Briar:['jungle'],
-  Ekko:['jungle','mid'], Elise:['jungle'], Evelynn:['jungle'], Fiddlesticks:['jungle','support'],
-  Graves:['jungle'], Hecarim:['jungle'], Ivern:['jungle','support'],
-  JarvanIV:['jungle'], Karthus:['jungle','mid'], Kayn:['jungle'],
-  Khazix:['jungle'], Kindred:['jungle'], LeeSin:['jungle'], Lillia:['jungle'],
-  MasterYi:['jungle'], Nidalee:['jungle'], Nocturne:['jungle'],
-  Nunu:['jungle'], RekSai:['jungle'], Rengar:['jungle','top'],
-  Sejuani:['jungle'], Shaco:['jungle'], Shyvana:['jungle'], Skarner:['jungle'],
-  Taliyah:['jungle','mid'], Talon:['jungle','mid'], Udyr:['jungle'],
-  Vi:['jungle'], Viego:['jungle'], Volibear:['top','jungle'],
-  XinZhao:['jungle'], Zed:['mid','jungle'],
-
-  // MID
-  Ahri:['mid'], Akali:['mid','top'], Akshan:['mid','top'], Anivia:['mid'],
-  Annie:['mid','support'], AurelionSol:['mid'], Azir:['mid'], Cassiopeia:['mid'],
-  CorneliusTwist:['mid'], Diana:['mid','jungle'], Fizz:['mid'],
-  Galio:['mid','support'], Heimerdinger:['mid','bot'], Katarina:['mid'],
-  Leblanc:['mid'], Lissandra:['mid'], Lux:['mid','support'], Malzahar:['mid'],
-  Naafiri:['mid'], Neeko:['mid','support'], Orianna:['mid'],
-  Qiyana:['mid'], Seraphine:['mid','support','bot'], Sylas:['mid'],
-  Syndra:['mid'], TwistedFate:['mid'], Veigar:['mid','bot'],
-  Vex:['mid'], Viktor:['mid'], Vladimir:['mid','top'], Xerath:['mid','support'],
-  Zoe:['mid'], Ziggs:['mid','bot'],
-
-  // BOT (ADC)
-  Aphelios:['bot'], Ashe:['bot','support'], Caitlyn:['bot'],
-  Corki:['bot','mid'], Draven:['bot'], Ezreal:['bot'],
-  Jhin:['bot'], Jinx:['bot'], KaiSa:['bot'], Kalista:['bot'],
-  KogMaw:['bot'], Lucian:['bot','mid'], MissFortune:['bot'],
-  Nilah:['bot'], Samira:['bot'], Sivir:['bot'], Smolder:['bot'],
-  Tristana:['bot','mid'], Twitch:['bot','jungle'], Varus:['bot','mid'],
-  Xayah:['bot'], Zeri:['bot'],
-
-  // SUPPORT
-  Alistar:['support'], Bard:['support'], Blitzcrank:['support'],
-  Brand:['support','mid'], Braum:['support'], Heimerdinger:['support','mid'],
-  Janna:['support'], Karma:['support','mid'], Leona:['support'],
-  Lulu:['support'], Morgana:['support','mid'], Nami:['support'],
-  Nautilus:['support'], Pyke:['support'], Rakan:['support'],
-  Rell:['support'], Renata:['support'], Senna:['support','bot'],
-  Shaco:['support','jungle'], Sona:['support'], Soraka:['support'],
-  Swain:['support','mid'], Tahm:['support','top'], Taric:['support'],
-  Thresh:['support'], Vel:['support','mid'], Yuumi:['support'],
-  Zilean:['support','mid'], Zyra:['support'],
-
-  // Champions récents / flex
-  Ambessa:['top'], Aurora:['top','mid'], Briar:['jungle'],
-  Hwei:['mid','support'], Milio:['support'], Naafiri:['mid'],
-  Smolder:['bot'], Vander:['top'], Mel:['mid'],
-};
-
-// Fallback basé sur les tags DDragon si le champion n'est pas dans le mapping
-const TAG_ROLE_FALLBACK = {
-  Fighter:  ['top'],
-  Tank:     ['top','support'],
-  Mage:     ['mid','support'],
-  Assassin: ['mid'],
-  Marksman: ['bot'],
-  Support:  ['support'],
-};
-
-function getChampionRoles(champStringId, tags) {
-  // Chercher dans le mapping par champId (ex: "MissFortune", "LeeSin")
-  if (CHAMP_ROLES[champStringId]) return CHAMP_ROLES[champStringId];
-
-  // Essai avec variations de nom
-  const clean = champStringId.replace(/[^a-zA-Z]/g, '');
-  for (const [k, v] of Object.entries(CHAMP_ROLES)) {
-    if (k.replace(/[^a-zA-Z]/g,'').toLowerCase() === clean.toLowerCase()) return v;
-  }
-
-  // Fallback DDragon tags
-  const roles = new Set();
-  for (const tag of tags) {
-    const mapped = TAG_ROLE_FALLBACK[tag];
-    if (mapped) mapped.forEach(r => roles.add(r));
-  }
-  return roles.size > 0 ? [...roles] : ['top','jungle','mid','bot','support'];
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   LEVEL COLORS (Riot official palette, niveaux illimités)
-═══════════════════════════════════════════════════════════════ */
+/* ── Level colors ── */
 function getLevelColor(lvl) {
-  if (lvl === 0)  return '#555566';   // Non joué — gris
-  if (lvl <= 2)   return '#5b4e2e';   // Bronze sombre
-  if (lvl <= 4)   return '#8a9ab0';   // Argent
-  if (lvl === 5)  return '#9d7025';   // Or (Mastery 5)
-  if (lvl === 6)  return '#9b59b6';   // Violet (Mastery 6)
-  if (lvl === 7)  return '#3d9ad1';   // Bleu (Mastery 7)
-  if (lvl === 8)  return '#c0392b';   // Rouge (Mastery 8)
-  if (lvl === 9)  return '#c89b3c';   // Or vif (Mastery 9)
-  if (lvl === 10) return '#f0e6d3';   // Platine (Mastery 10)
-  const extra = Math.min(lvl - 10, 20);
-  const g = Math.round(200 + extra * 2.5);
+  if (lvl===0)  return '#555566';
+  if (lvl<=2)   return '#5b4e2e';
+  if (lvl<=4)   return '#8a9ab0';
+  if (lvl===5)  return '#9d7025';
+  if (lvl===6)  return '#9b59b6';
+  if (lvl===7)  return '#3d9ad1';
+  if (lvl===8)  return '#c0392b';
+  if (lvl===9)  return '#c89b3c';
+  if (lvl===10) return '#f0e6d3';
+  const g = Math.round(200+Math.min(lvl-10,20)*2.5);
   return `rgb(180,${g},255)`;
 }
-
-// Couleur lisible du TEXTE du label — version éclaircie pour les niveaux sombres
 function getLevelTextColor(lvl) {
-  if (lvl === 0)  return '#6e6e80';   // Non joué — gris clair
-  if (lvl <= 2)   return '#9a8060';   // Bronze éclairci
-  if (lvl <= 4)   return '#b8c8d8';   // Argent clair
-  // Niveaux 5+ : la couleur de bordure est déjà suffisamment lumineuse
+  if (lvl===0) return '#6e6e80';
+  if (lvl<=2)  return '#9a8060';
+  if (lvl<=4)  return '#b8c8d8';
   return getLevelColor(lvl);
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   SIDEBAR
-═══════════════════════════════════════════════════════════════ */
-let eternalsByChamp = {}; // cache des eternals chargés
-
+/* ── Sidebar ── */
 function openSidebar(d) {
   const m = d.mastery;
   const color = getLevelColor(d.level);
-
-  // Appliquer la couleur de niveau sur la sidebar
   const sb = document.getElementById('sidebar');
   sb.style.setProperty('--sb-color', color);
-
-  // Header
   document.getElementById('sb-img').src = d.img;
   document.getElementById('sb-img').style.borderColor = color;
   document.getElementById('sb-name').textContent = d.name;
-
   const badge = document.getElementById('sb-level-badge');
   badge.textContent = d.level > 0 ? `Niveau ${d.level}` : 'Non joué';
   badge.style.background = color;
-  badge.style.color = d.level >= 4 && d.level <= 4 ? '#222' : (d.level === 0 ? '#aaa' : '#000');
-
-  // Last played
+  badge.style.color = (d.level>=3 && d.level<=4) ? '#1a1a2e' : (d.level===0?'#888':'#000');
   const lp = document.getElementById('sb-last-played');
   if (m?.lastPlayTime) {
-    const date = new Date(m.lastPlayTime);
-    lp.textContent = 'Dernière partie : ' + date.toLocaleDateString('fr-FR', {
-      day: 'numeric', month: 'long', year: 'numeric'
-    });
-  } else {
-    lp.textContent = 'Jamais joué';
-  }
-
-  // Body
+    lp.textContent = 'Dernière partie : ' + new Date(m.lastPlayTime).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+  } else { lp.textContent = 'Jamais joué'; }
   const body = document.getElementById('sb-body');
-  body.innerHTML = '';
-
-  if (!m) {
-    body.innerHTML = '<p style="padding:20px;color:var(--c-text-dim);font-style:italic;">Aucune donnée de maîtrise pour ce champion.</p>';
-  } else {
-    body.innerHTML = buildSidebarBody(d, m, color);
-  }
-
-  // Ouvrir
+  body.innerHTML = m ? buildSidebarBody(d, m, color) : '<p style="padding:20px;color:var(--c-text-dim);font-style:italic;">Aucune donnée de maîtrise.</p>';
   sb.classList.add('open');
   document.getElementById('sb-overlay').classList.add('open');
-
-  // Charger les eternals en async
   if (m && d.id) loadEternals(d, color);
 }
-
 function closeSidebar() {
   document.getElementById('sidebar').classList.remove('open');
   document.getElementById('sb-overlay').classList.remove('open');
 }
-
 function buildSidebarBody(d, m, color) {
   const lvl = d.level;
-
-  // Points
-  const ptsCurrent  = (m.championPoints ?? 0).toLocaleString('fr-FR');
-  const ptsSince    = (m.championPointsSinceLastLevel ?? 0).toLocaleString('fr-FR');
-  const ptsUntil    = m.championPointsUntilNextLevel ?? 0;
-  const ptsUntilFmt = ptsUntil > 0 ? ptsUntil.toLocaleString('fr-FR') : '—';
-
-  // Progress vers prochain niveau (seulement si ptsUntil > 0)
+  const ptsCurrent = (m.championPoints??0).toLocaleString('fr-FR');
+  const ptsSince   = (m.championPointsSinceLastLevel??0).toLocaleString('fr-FR');
+  const ptsUntil   = m.championPointsUntilNextLevel??0;
   let progressHtml = '';
   if (ptsUntil > 0 && m.championPointsSinceLastLevel != null) {
-    const total = (m.championPointsSinceLastLevel ?? 0) + ptsUntil;
-    const pct   = total > 0 ? Math.round((m.championPointsSinceLastLevel / total) * 100) : 0;
-    progressHtml = `
-      <div class="sb-progress-wrap">
-        <div class="sb-progress-bar" style="width:${pct}%;--sb-color:${color}"></div>
-      </div>
-      <div class="sb-progress-labels">
-        <span>${(m.championPointsSinceLastLevel ?? 0).toLocaleString('fr-FR')} pts gagnés</span>
-        <span>${pct}%</span>
-        <span>${ptsUntil.toLocaleString('fr-FR')} restants</span>
-      </div>
-    `;
+    const total = (m.championPointsSinceLastLevel??0) + ptsUntil;
+    const pct   = total > 0 ? Math.round((m.championPointsSinceLastLevel/total)*100) : 0;
+    progressHtml = `<div class="sb-progress-wrap"><div class="sb-progress-bar" style="width:${pct}%;--sb-color:${color}"></div></div><div class="sb-progress-labels"><span>${(m.championPointsSinceLastLevel??0).toLocaleString('fr-FR')} pts</span><span>${pct}%</span><span>${ptsUntil.toLocaleString('fr-FR')} restants</span></div>`;
   } else if (ptsUntil <= 0) {
     progressHtml = `<div style="font-size:.75rem;color:${color};margin-top:6px;">✓ Niveau max atteint pour les points</div>`;
   }
-
-  // Tokens / Marks
   let tokensHtml = '';
-  const tokensEarned  = m.tokensEarned ?? 0;
-  const marksRequired = m.markRequiredForNextLevel ?? 0;
+  const tokensEarned = m.tokensEarned??0;
+  const marksRequired = m.markRequiredForNextLevel??0;
   if (marksRequired > 0 || tokensEarned > 0) {
-    const tokenDots = Array.from({length: Math.max(marksRequired, tokensEarned)}, (_, i) =>
-      `<div class="sb-token${i < tokensEarned ? ' filled' : ''}" style="${i < tokensEarned ? '--sb-color:'+color : ''}">
-        ${i < tokensEarned ? '✦' : '○'}
-      </div>`
-    ).join('');
-    tokensHtml = `
-      <div class="sb-tokens">${tokenDots}</div>
-      <div class="sb-token-label">${tokensEarned} / ${marksRequired} marque${marksRequired > 1 ? 's' : ''} pour le niveau ${lvl + 1}</div>
-    `;
+    const dots = Array.from({length:Math.max(marksRequired,tokensEarned)},(_,i)=>
+      `<div class="sb-token${i<tokensEarned?' filled':''}">${i<tokensEarned?'✦':'○'}</div>`).join('');
+    tokensHtml = `<div class="sb-tokens">${dots}</div><div class="sb-token-label">${tokensEarned} / ${marksRequired} marque${marksRequired>1?'s':''} pour le niveau ${lvl+1}</div>`;
   }
-
-  // Next milestone
   let milestoneHtml = '';
   const nm = m.nextSeasonMilestone;
   if (nm) {
-    const grades   = nm.requireGradeCounts ?? {};
-    const gradeStr = Object.entries(grades).map(([g, n]) => `${n}× ${g}`).join(', ');
-    const rewardMarks = nm.rewardMarks ?? 0;
-    const totalGames  = nm.totalGamesRequires ?? 0;
-    milestoneHtml = `
-      <div class="sb-section">
-        <div class="sb-section-title">Prochain Milestone</div>
-        ${gradeStr ? `<div class="sb-row"><span class="sb-row-label">Notes requises</span><span class="sb-grade">${gradeStr}</span></div>` : ''}
-        <div class="sb-row"><span class="sb-row-label">Parties totales requises</span><span class="sb-row-value">${totalGames}</span></div>
-        <div class="sb-row"><span class="sb-row-label">Marques récompensées</span><span class="sb-row-value gold">+${rewardMarks}</span></div>
-        ${nm.bonus ? '<div class="sb-row"><span class="sb-row-label">Bonus</span><span class="sb-row-value highlight">✓ Oui</span></div>' : ''}
-      </div>
-    `;
+    const grades = Object.entries(nm.requireGradeCounts??{}).map(([g,n])=>`${n}× ${g}`).join(', ');
+    milestoneHtml = `<div class="sb-section"><div class="sb-section-title">Prochain Milestone</div>${grades?`<div class="sb-row"><span class="sb-row-label">Notes requises</span><span class="sb-grade">${grades}</span></div>`:''}<div class="sb-row"><span class="sb-row-label">Parties requises</span><span class="sb-row-value">${nm.totalGamesRequires??0}</span></div><div class="sb-row"><span class="sb-row-label">Marques récompensées</span><span class="sb-row-value gold">+${nm.rewardMarks??0}</span></div>${nm.bonus?'<div class="sb-row"><span class="sb-row-label">Bonus</span><span class="sb-row-value highlight">✓</span></div>':''}</div>`;
   }
-
-  // Season milestone actuel
-  const milestone = m.championSeasonMilestone ?? 0;
-
-  return `
-    <div class="sb-section">
-      <div class="sb-section-title">Points de Maîtrise</div>
-      <div class="sb-row">
-        <span class="sb-row-label">Total</span>
-        <span class="sb-row-value gold">${ptsCurrent} pts</span>
-      </div>
-      <div class="sb-row">
-        <span class="sb-row-label">Gagnés depuis niveau ${lvl}</span>
-        <span class="sb-row-value">${ptsSince} pts</span>
-      </div>
-      <div class="sb-row">
-        <span class="sb-row-label">Jusqu'au niveau ${lvl + 1}</span>
-        <span class="sb-row-value">${ptsUntilFmt}</span>
-      </div>
-      ${progressHtml}
-    </div>
-
-    <div class="sb-section">
-      <div class="sb-section-title">Progression</div>
-      <div class="sb-row">
-        <span class="sb-row-label">Milestone saison</span>
-        <span class="sb-row-value">${milestone}</span>
-      </div>
-      ${tokensHtml}
-    </div>
-
+  return `<div class="sb-section"><div class="sb-section-title">Points de Maîtrise</div>
+    <div class="sb-row"><span class="sb-row-label">Total</span><span class="sb-row-value gold">${ptsCurrent} pts</span></div>
+    <div class="sb-row"><span class="sb-row-label">Depuis niveau ${lvl}</span><span class="sb-row-value">${ptsSince} pts</span></div>
+    <div class="sb-row"><span class="sb-row-label">Jusqu'au niveau ${lvl+1}</span><span class="sb-row-value">${ptsUntil>0?ptsUntil.toLocaleString('fr-FR'):'—'}</span></div>
+    ${progressHtml}</div>
+    <div class="sb-section"><div class="sb-section-title">Progression</div>
+    <div class="sb-row"><span class="sb-row-label">Milestone saison</span><span class="sb-row-value">${m.championSeasonMilestone??0}</span></div>
+    ${tokensHtml}</div>
     ${milestoneHtml}
-
-    <div id="sb-eternals" style="margin-top:16px;">
-      <div class="sb-section-title">Eternals</div>
-      <div style="font-size:.75rem;color:var(--c-text-dim);font-style:italic;padding:4px 0;">Chargement…</div>
-    </div>
-  `;
+    <div id="sb-eternals" style="margin-top:16px;"><div class="sb-section-title">Eternals & Stats</div><div style="font-size:.75rem;color:var(--c-text-dim);font-style:italic;">Chargement…</div></div>`;
 }
-
-/* ═══════════════════════════════════════════════════════════════
-   ETERNALS (via DDragon — stats par champion)
-═══════════════════════════════════════════════════════════════ */
 async function loadEternals(d, color) {
   const el = document.getElementById('sb-eternals');
   if (!el) return;
-
-  // Les eternals ne sont pas dans l'API mastery standard de Riot.
-  // On affiche les stats disponibles dans l'objet mastery + un message.
   const m = d.mastery;
-  const champId = d.id;
-
-  // Informations supplémentaires qu'on peut extraire
   const extras = [];
-  if (m.championSeasonMilestone != null)
-    extras.push({ name: 'Milestone de saison', value: m.championSeasonMilestone });
-  if (m.tokensEarned != null && m.tokensEarned > 0)
-    extras.push({ name: 'Tokens gagnés', value: m.tokensEarned });
-  if (m.lastPlayTime)
-    extras.push({ name: 'Dernière partie', value: new Date(m.lastPlayTime).toLocaleDateString('fr-FR') });
-
-  // Vérifier si des données d'eternals existent dans le cache
-  if (eternalsByChamp[champId]) {
-    renderEternals(el, eternalsByChamp[champId], color);
-    return;
-  }
-
-  // L'API Riot ne fournit pas les Eternals publiquement sans endpoint dédié
-  // On affiche un message informatif et les stats disponibles
-  let html = `
-    <div class="sb-section-title">Eternals & Stats</div>
-    <div style="font-size:.72rem;color:var(--c-text-dim);padding:4px 0 8px;font-style:italic;line-height:1.5;">
-      Les Eternals nécessitent un endpoint Riot spécifique non disponible dans l'API publique.
-    </div>
-  `;
-
-  if (extras.length) {
-    html += extras.map(e => `
-      <div class="sb-eternal">
-        <span class="sb-eternal-name">${e.name}</span>
-        <span class="sb-eternal-value" style="color:${color}">${e.value}</span>
-      </div>
-    `).join('');
-  }
-
-  el.innerHTML = html;
+  if (m.championSeasonMilestone!=null) extras.push({name:'Milestone de saison',value:m.championSeasonMilestone});
+  if (m.tokensEarned>0) extras.push({name:'Tokens gagnés',value:m.tokensEarned});
+  if (m.lastPlayTime)   extras.push({name:'Dernière partie',value:new Date(m.lastPlayTime).toLocaleDateString('fr-FR')});
+  el.innerHTML = `<div class="sb-section-title">Eternals & Stats</div>
+    <div style="font-size:.72rem;color:var(--c-text-dim);padding:4px 0 8px;font-style:italic;line-height:1.5;">Les Eternals nécessitent un endpoint Riot non disponible dans l'API publique.</div>
+    ${extras.map(e=>`<div class="sb-eternal"><span class="sb-eternal-name">${e.name}</span><span class="sb-eternal-value" style="color:${color}">${e.value}</span></div>`).join('')}`;
 }
 
-function renderEternals(el, eternals, color) {
-  if (!eternals || !eternals.length) {
-    el.innerHTML = '<div style="font-size:.75rem;color:var(--c-text-dim);">Aucun Eternal trouvé.</div>';
-    return;
-  }
-  el.innerHTML = `
-    <div class="sb-section-title">Eternals</div>
-    ${eternals.map(e => `
-      <div class="sb-eternal">
-        <span class="sb-eternal-name">${escHtml(e.name)}</span>
-        <span class="sb-eternal-value" style="color:${color}">${e.value.toLocaleString('fr-FR')}</span>
-        ${e.milestone ? `<span class="sb-eternal-milestone">Milestone ${e.milestone}</span>` : ''}
-      </div>
-    `).join('')}
-  `;
-}
-
-
-/* ═══════════════════════════════════════════════════════════════
-   OPTIONS MODAL
-═══════════════════════════════════════════════════════════════ */
+/* ── Options ── */
 function openOptions() {
   document.getElementById('opt-overlay').classList.add('open');
-  // Afficher version DDragon et nombre de champs si dispo
-  if (ddVersion) {
-    document.getElementById('opt-dd-version').textContent = ddVersion;
-  }
+  if (ddVersion) document.getElementById('opt-dd-version').textContent = ddVersion;
   const count = Object.keys(champMap).length;
-  if (count > 0) {
-    document.getElementById('opt-champ-count').textContent = count;
+  if (count > 0) document.getElementById('opt-champ-count').textContent = count;
+}
+function closeOptions() { document.getElementById('opt-overlay').classList.remove('open'); }
+
+/* ── Roles mapping ── */
+const CHAMP_ROLES = {
+  Aatrox:['top'],Camille:['top'],Darius:['top'],DrMundo:['top','jungle'],Fiora:['top'],Gangplank:['top'],Garen:['top'],Gnar:['top'],Gragas:['top','jungle'],Gwen:['top'],Illaoi:['top'],Irelia:['top','mid'],Jax:['top','jungle'],Jayce:['top','mid'],Kayle:['top'],Kennen:['top'],Kled:['top'],Malphite:['top'],Maokai:['top','jungle','support'],Mordekaiser:['top'],Nasus:['top'],Olaf:['top','jungle'],Ornn:['top'],Pantheon:['top','support'],Poppy:['top','jungle'],Quinn:['top'],Renekton:['top'],Riven:['top'],Rumble:['top'],Ryze:['top','mid'],Sett:['top'],Shen:['top','support'],Singed:['top'],Sion:['top'],Teemo:['top','bot'],Trundle:['top','jungle'],Tryndamere:['top'],Urgot:['top'],Vayne:['top','bot'],Warwick:['top','jungle'],Wukong:['top','jungle'],Yasuo:['top','mid'],Yone:['top','mid'],Yorick:['top'],Zac:['jungle','top'],Ambessa:['top'],Vander:['top'],
+  Amumu:['jungle','support'],BelVeth:['jungle'],Briar:['jungle'],Cho:['top','jungle'],Ekko:['jungle','mid'],Elise:['jungle'],Evelynn:['jungle'],Fiddlesticks:['jungle','support'],Graves:['jungle'],Hecarim:['jungle'],Ivern:['jungle','support'],JarvanIV:['jungle'],Karthus:['jungle','mid'],Kayn:['jungle'],Khazix:['jungle'],Kindred:['jungle'],LeeSin:['jungle'],Lillia:['jungle'],MasterYi:['jungle'],Nidalee:['jungle'],Nocturne:['jungle'],Nunu:['jungle'],RekSai:['jungle'],Rengar:['jungle','top'],Sejuani:['jungle'],Shaco:['jungle'],Shyvana:['jungle'],Skarner:['jungle'],Taliyah:['jungle','mid'],Talon:['jungle','mid'],Udyr:['jungle'],Vi:['jungle'],Viego:['jungle'],VoliBear:['top','jungle'],XinZhao:['jungle'],Zed:['mid','jungle'],
+  Ahri:['mid'],Akali:['mid','top'],Akshan:['mid','top'],Anivia:['mid'],Annie:['mid','support'],AurelionSol:['mid'],Azir:['mid'],Cassiopeia:['mid'],Diana:['mid','jungle'],Fizz:['mid'],Galio:['mid','support'],Heimerdinger:['mid','bot'],Katarina:['mid'],Leblanc:['mid'],Lissandra:['mid'],Lux:['mid','support'],Malzahar:['mid'],Naafiri:['mid'],Neeko:['mid','support'],Orianna:['mid'],Qiyana:['mid'],Seraphine:['mid','support','bot'],Sylas:['mid'],Syndra:['mid'],TwistedFate:['mid'],Veigar:['mid','bot'],Vex:['mid'],Viktor:['mid'],Vladimir:['mid','top'],Xerath:['mid','support'],Zoe:['mid'],Ziggs:['mid','bot'],Hwei:['mid','support'],Mel:['mid'],Aurora:['top','mid'],
+  Aphelios:['bot'],Ashe:['bot','support'],Caitlyn:['bot'],Corki:['bot','mid'],Draven:['bot'],Ezreal:['bot'],Jhin:['bot'],Jinx:['bot'],KaiSa:['bot'],Kalista:['bot'],KogMaw:['bot'],Lucian:['bot','mid'],MissFortune:['bot'],Nilah:['bot'],Samira:['bot'],Sivir:['bot'],Smolder:['bot'],Tristana:['bot','mid'],Twitch:['bot','jungle'],Varus:['bot','mid'],Xayah:['bot'],Zeri:['bot'],
+  Alistar:['support'],Bard:['support'],Blitzcrank:['support'],Brand:['support','mid'],Braum:['support'],Janna:['support'],Karma:['support','mid'],Leona:['support'],Lulu:['support'],Milio:['support'],Morgana:['support','mid'],Nami:['support'],Nautilus:['support'],Pyke:['support'],Rakan:['support'],Rell:['support'],Renata:['support'],Senna:['support','bot'],Sona:['support'],Soraka:['support'],Swain:['support','mid'],Tahm:['support','top'],Taric:['support'],Thresh:['support'],Vel:['support','mid'],Yuumi:['support'],Zilean:['support','mid'],Zyra:['support'],
+};
+const TAG_FALLBACK = {Fighter:['top'],Tank:['top','support'],Mage:['mid','support'],Assassin:['mid'],Marksman:['bot'],Support:['support']};
+function getChampionRoles(id, tags) {
+  if (CHAMP_ROLES[id]) return CHAMP_ROLES[id];
+  const clean = id.replace(/[^a-zA-Z]/g,'').toLowerCase();
+  for (const [k,v] of Object.entries(CHAMP_ROLES)) {
+    if (k.replace(/[^a-zA-Z]/g,'').toLowerCase()===clean) return v;
   }
+  const roles = new Set();
+  for (const t of tags) { const m=TAG_FALLBACK[t]; if(m) m.forEach(r=>roles.add(r)); }
+  return roles.size>0?[...roles]:['top','jungle','mid','bot','support'];
 }
 
-function closeOptions() {
-  document.getElementById('opt-overlay').classList.remove('open');
-}
+/* ── UI helpers ── */
+function showError(msg) { document.getElementById('error-msg').textContent='⚠ '+msg; document.getElementById('error-bar').style.display='block'; }
+function hideError()   { document.getElementById('error-bar').style.display='none'; }
+function showLoading(s){ document.getElementById('loading').style.display=s?'block':'none'; }
+function clearResults(){ document.getElementById('grid').innerHTML=''; document.getElementById('controls').style.display='none'; document.getElementById('role-bar').style.display='none'; }
+function setBusy(b)    { document.getElementById('btn-search').disabled=b; }
+function esc(s)        { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-function handleOptOverlayClick(e) {
-  if (e.target === document.getElementById('opt-overlay')) closeOptions();
-}
-
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { closeOptions(); closeSidebar(); }
+/* ── Keyboard ── */
+['inp-name','inp-tag'].forEach(id => document.getElementById(id).addEventListener('keydown', e => { if(e.key==='Enter') doSearch(); }));
+document.getElementById('inp-name').addEventListener('input', e => {
+  if (e.target.value.includes('#')) {
+    const [n,t] = e.target.value.split('#');
+    e.target.value = n;
+    document.getElementById('inp-tag').value = t||'';
+    document.getElementById('inp-tag').focus();
+  }
 });
-
-
+document.addEventListener('keydown', e => { if(e.key==='Escape'){ closeOptions(); closeSidebar(); } });
 </script>
-
-<!-- ═══════════════════════ SIDEBAR ═══════════════════════ -->
-<div id="sb-overlay" onclick="closeSidebar()"></div>
-<div id="sidebar">
-  <button class="sb-close" onclick="closeSidebar()">✕</button>
-  <div class="sb-header" id="sb-header">
-    <img class="sb-champ-img" id="sb-img" src="" alt=""/>
-    <div class="sb-champ-title">
-      <div class="sb-champ-name" id="sb-name">—</div>
-      <div cla
+</body>
+</html>
