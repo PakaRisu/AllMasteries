@@ -399,6 +399,7 @@
     /* Gradient overlay on image only */
     .champ-img-wrap {
       position: relative;
+      pointer-events: none;
     }
     .champ-base-overlay {
       position: absolute; bottom: 0; left: 0; right: 0; height: 30%;
@@ -413,6 +414,7 @@
       flex-direction: column;
       gap: 2px;
       background: var(--c-panel);
+      pointer-events: none;
     }
 
     .champ-name {
@@ -934,7 +936,7 @@
 <!-- ═══════════════════════ HEADER ═══════════════════════ -->
 <header>
   <p class="header-eyebrow">League of Legends</p>
-  <h1>Masteries Check</h1>
+  <h1>Masteries Checker</h1>
   <p class="header-sub">League of Legends — Champion Mastery Tracker</p>
 </header>
 
@@ -1080,7 +1082,7 @@
 <!-- ═══════════════════════ FOOTER ═══════════════════════ -->
 <footer>
   <div>
-    Masteries Check n'est pas approuvé par Riot Games et ne reflète pas les points de vue de Riot Games, Inc. —
+    Masteries Checker n'est pas approuvé par Riot Games et ne reflète pas les points de vue de Riot Games, Inc. —
     <a href="https://lolcompatibility.com" target="_blank">lolcompatibility.com</a> · PakaRisu
   </div>
   <button class="options-btn" onclick="openOptions()">
@@ -1108,7 +1110,7 @@
       <div class="opt-section">
         <div class="opt-section-title">📜 Mentions légales</div>
         <p>
-          <strong>Masteries Check</strong> est une application tierce non officielle, créée par un fan de League of Legends.
+          <strong>Masteries Checker</strong> est une application tierce non officielle, créée par un fan de League of Legends.
           Elle n'est pas approuvée par Riot Games et ne reflète pas les points de vue ou opinions de Riot Games
           ou de quiconque impliqué officiellement dans la production ou la gestion des propriétés de Riot Games.
         </p>
@@ -1124,7 +1126,7 @@
           <a href="https://communitydragon.org" target="_blank">Community Dragon</a>.
         </p>
         <p class="opt-notice">
-          Masteries Check ne stocke aucune donnée personnelle. Les requêtes sont effectuées en temps réel
+          Masteries Checker ne stocke aucune donnée personnelle. Les requêtes sont effectuées en temps réel
           via l'API Riot Games et ne sont pas conservées côté serveur.
         </p>
       </div>
@@ -1382,7 +1384,11 @@ function renderGrid() {
         </div>
       </div>
     `;
-    card.addEventListener('click', () => openSidebar(d));
+    const champId = d.id;
+    card.addEventListener('click', () => {
+      const fresh = allData.find(x => x.id === champId);
+      if (fresh) openSidebar(fresh);
+    });
     frag.appendChild(card);
   });
   grid.appendChild(frag);
