@@ -688,7 +688,13 @@ async function doSearch() {
     const [version, apiResp] = await Promise.all([
       getDDVersion(),
       fetch(`/api/mastery?gameName=${encodeURIComponent(name)}&tagLine=${encodeURIComponent(tag)}&region=${region}`)
-        .then(r => r.json())
+        .then(async r => {
+          const text = await r.text();
+          console.log('[API] status:', r.status, 'url:', r.url);
+          console.log('[API] raw response:', text.substring(0, 300));
+          try { return JSON.parse(text); }
+          catch(e) { return { error: `HTTP ${r.status} — Réponse non-JSON : ${text.substring(0, 120)}` }; }
+        })
     ]);
 
     if (apiResp.error) {
