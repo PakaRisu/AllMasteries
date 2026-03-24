@@ -374,10 +374,9 @@
         id="champ-search"
         type="text"
         placeholder="Rechercher un champion…"
-        oninput="onChampSearch()"
         autocomplete="off"
       />
-      <button class="champ-search-clear" id="champ-search-clear" onclick="clearChampSearch()">✕</button>
+      <button class="champ-search-clear" id="champ-search-clear">✕</button>
     </div>
   </div>
 </div>
@@ -762,7 +761,16 @@ function clearChampSearch() {
 function showError(msg) { document.getElementById('error-msg').textContent='⚠ '+msg; document.getElementById('error-bar').style.display='block'; }
 function hideError()   { document.getElementById('error-bar').style.display='none'; }
 function showLoading(s){ document.getElementById('loading').style.display=s?'block':'none'; }
-function clearResults(){ document.getElementById('grid').innerHTML=''; document.getElementById('controls').style.display='none'; document.getElementById('role-bar').style.display='none'; }
+function clearResults(){
+  document.getElementById('grid').innerHTML='';
+  document.getElementById('controls').style.display='none';
+  document.getElementById('role-bar').style.display='none';
+  curSearch='';
+  const inp = document.getElementById('champ-search');
+  if(inp) inp.value='';
+  const clr = document.getElementById('champ-search-clear');
+  if(clr) clr.style.display='none';
+}
 function setBusy(b)    { document.getElementById('btn-search').disabled=b; }
 function esc(s)        { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
@@ -772,3 +780,36 @@ document.getElementById('inp-name').addEventListener('input', e => {
   if (e.target.value.includes('#')) {
     const [n,t] = e.target.value.split('#');
     e.target.value = n;
+      document.getElementById('inp-tag').value = t || '';
+    document.getElementById('inp-tag').focus();
+  }
+});
+
+// Champion search
+const _inp = document.getElementById('champ-search');
+const _clr = document.getElementById('champ-search-clear');
+if (_inp) {
+  _inp.addEventListener('input', () => {
+    curSearch = _inp.value.trim();
+    if (_clr) _clr.style.display = curSearch ? 'block' : 'none';
+    renderGrid();
+    updateStats();
+  });
+}
+if (_clr) {
+  _clr.addEventListener('click', () => {
+    curSearch = '';
+    if (_inp) _inp.value = '';
+    _clr.style.display = 'none';
+    renderGrid();
+    updateStats();
+  });
+}
+
+// Escape key
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeOptions(); closeSidebar(); }
+});
+</script>
+</body>
+</html>
