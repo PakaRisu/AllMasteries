@@ -204,6 +204,57 @@
     .opt-champs-count { font-family: var(--font-title); font-size: .9rem; color: var(--c-gold); }
     .opt-contact { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: .82rem; }
 
+
+    .champ-search-wrap {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+    .champ-search-input {
+      background: rgba(1,10,19,.6);
+      border: 1px solid var(--c-border);
+      border-bottom-color: var(--c-gold-dark);
+      color: var(--c-gold-light);
+      padding: 5px 30px 5px 28px;
+      font-family: var(--font-body);
+      font-size: .78rem;
+      width: 180px;
+      outline: none;
+      transition: border-color .2s, width .25s, box-shadow .2s;
+      border-radius: 0;
+    }
+    .champ-search-input::placeholder { color: var(--c-text-dim); font-style: italic; }
+    .champ-search-input:focus {
+      border-color: var(--c-gold-dark);
+      border-bottom-color: var(--c-gold);
+      box-shadow: 0 2px 0 -1px var(--c-gold);
+      width: 220px;
+    }
+    .champ-search-icon {
+      position: absolute;
+      left: 8px;
+      top: 50%; transform: translateY(-50%);
+      color: var(--c-text-dim);
+      font-size: .75rem;
+      pointer-events: none;
+    }
+    .champ-search-clear {
+      position: absolute;
+      right: 6px;
+      top: 50%; transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--c-text-dim);
+      font-size: .8rem;
+      cursor: pointer;
+      padding: 0 2px;
+      line-height: 1;
+      display: none;
+      transition: color .15s;
+    }
+    .champ-search-clear:hover { color: var(--c-gold); }
+
     /* RESPONSIVE */
     @media (max-width: 540px) {
       .tag-region-row { grid-template-columns: 1fr; }
@@ -316,6 +367,18 @@
     <button class="role-btn" onclick="setRole('support',this)">
       <img src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-utility.png" alt="Support"/> Support <span class="role-count" id="rc-support"></span>
     </button>
+    <div class="champ-search-wrap">
+      <span class="champ-search-icon">🔍</span>
+      <input
+        class="champ-search-input"
+        id="champ-search"
+        type="text"
+        placeholder="Rechercher un champion…"
+        oninput="onChampSearch()"
+        autocomplete="off"
+      />
+      <button class="champ-search-clear" id="champ-search-clear" onclick="clearChampSearch()">✕</button>
+    </div>
   </div>
 </div>
 
@@ -359,7 +422,7 @@
       </div>
       <div class="opt-section">
         <div class="opt-section-title">✉ Contact</div>
-        <div class="opt-contact"><span>lol.compatibility@gmail.com</span></div>
+        <div class="opt-contact"><span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="117d7e7d3f727e7c6170657873787d78656851767c70787d3f727e7c">[email&#160;protected]</a></span></div>
         <div class="opt-contact" style="margin-top:4px;"><span>— PakaRisu · <a href="https://lolcompatibility.com" target="_blank">lolcompatibility.com</a></span></div>
       </div>
     </div>
@@ -381,7 +444,7 @@
   <div class="sb-body" id="sb-body"></div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const DD = "https://ddragon.leagueoflegends.com";
 let ddVersion = null;
 let champMap  = {};
@@ -389,6 +452,7 @@ let allData   = [];
 let maxPts    = 1;
 let curFilter = 'all';
 let curRole   = 'all';
+let curSearch = '';
 let eternalsByChamp = {};
 
 /* ── DDragon ── */
@@ -469,6 +533,10 @@ function getFiltered() {
     default:         data = [...allData];
   }
   if (curRole !== 'all') data = data.filter(d => d.roles.includes(curRole));
+  if (curSearch) {
+    const q = curSearch.toLowerCase();
+    data = data.filter(d => d.name.toLowerCase().includes(q));
+  }
   return data;
 }
 function getSorted(data) {
@@ -657,12 +725,12 @@ function closeOptions() { document.getElementById('opt-overlay').classList.remov
 /* ── Roles mapping ── */
 const CHAMP_ROLES = {
   Aatrox:['top'],Camille:['top'],Darius:['top'],DrMundo:['top','jungle'],Fiora:['top'],Gangplank:['top'],Garen:['top'],Gnar:['top'],Gragas:['top','jungle'],Gwen:['top'],Illaoi:['top'],Irelia:['top','mid'],Jax:['top','jungle'],Jayce:['top','mid'],Kayle:['top'],Kennen:['top'],Kled:['top'],Malphite:['top'],Maokai:['top','jungle','support'],Mordekaiser:['top'],Nasus:['top'],Olaf:['top','jungle'],Ornn:['top'],Pantheon:['top','support'],Poppy:['top','jungle'],Quinn:['top'],Renekton:['top'],Riven:['top'],Rumble:['top'],Ryze:['top','mid'],Sett:['top'],Shen:['top','support'],Singed:['top'],Sion:['top'],Teemo:['top','bot'],Trundle:['top','jungle'],Tryndamere:['top'],Urgot:['top'],Vayne:['top','bot'],Warwick:['top','jungle'],Wukong:['top','jungle'],Yasuo:['top','mid'],Yone:['top','mid'],Yorick:['top'],Zac:['jungle','top'],Ambessa:['top'],Vander:['top'],
-  Amumu:['jungle','support'],BelVeth:['jungle'],Briar:['jungle'],Cho:['top','jungle'],Ekko:['jungle','mid'],Elise:['jungle'],Evelynn:['jungle'],Fiddlesticks:['jungle','support'],Graves:['jungle'],Hecarim:['jungle'],Ivern:['jungle','support'],JarvanIV:['jungle'],Karthus:['jungle','mid'],Kayn:['jungle'],Khazix:['jungle'],Kindred:['jungle'],LeeSin:['jungle'],Lillia:['jungle'],MasterYi:['jungle'],Nidalee:['jungle'],Nocturne:['jungle'],Nunu:['jungle'],RekSai:['jungle'],Rengar:['jungle','top'],Sejuani:['jungle'],Shaco:['jungle'],Shyvana:['jungle'],Skarner:['jungle'],Taliyah:['jungle','mid'],Talon:['jungle','mid'],Udyr:['jungle'],Vi:['jungle'],Viego:['jungle'],VoliBear:['top','jungle'],XinZhao:['jungle'],Zed:['mid','jungle'],
-  Ahri:['mid'],Akali:['mid','top'],Akshan:['mid','top'],Anivia:['mid'],Annie:['mid','support'],AurelionSol:['mid'],Azir:['mid'],Cassiopeia:['mid'],Diana:['mid','jungle'],Fizz:['mid'],Galio:['mid','support'],Heimerdinger:['mid','bot'],Katarina:['mid'],Leblanc:['mid'],Lissandra:['mid'],Lux:['mid','support'],Malzahar:['mid'],Naafiri:['mid'],Neeko:['mid','support'],Orianna:['mid'],Qiyana:['mid'],Seraphine:['mid','support','bot'],Sylas:['mid'],Syndra:['mid'],TwistedFate:['mid'],Veigar:['mid','bot'],Vex:['mid'],Viktor:['mid'],Vladimir:['mid','top'],Xerath:['mid','support'],Zoe:['mid'],Ziggs:['mid','bot'],Hwei:['mid','support'],Mel:['mid'],Aurora:['top','mid'],
-  Aphelios:['bot'],Ashe:['bot','support'],Caitlyn:['bot'],Corki:['bot','mid'],Draven:['bot'],Ezreal:['bot'],Jhin:['bot'],Jinx:['bot'],KaiSa:['bot'],Kalista:['bot'],KogMaw:['bot'],Lucian:['bot','mid'],MissFortune:['bot'],Nilah:['bot'],Samira:['bot'],Sivir:['bot'],Smolder:['bot'],Tristana:['bot','mid'],Twitch:['bot','jungle'],Varus:['bot','mid'],Xayah:['bot'],Zeri:['bot'],
+  Rammus:['jungle'],Amumu:['jungle','support'],BelVeth:['jungle'],Briar:['jungle'],Cho:['top','jungle'],Ekko:['jungle','mid'],Elise:['jungle'],Evelynn:['jungle'],Fiddlesticks:['jungle','support'],Graves:['jungle'],Hecarim:['jungle'],Ivern:['jungle','support'],JarvanIV:['jungle'],Karthus:['jungle','mid'],Kayn:['jungle'],Khazix:['jungle'],Kindred:['jungle'],LeeSin:['jungle'],Lillia:['jungle'],MasterYi:['jungle'],Nidalee:['jungle'],Nocturne:['jungle'],Nunu:['jungle'],RekSai:['jungle'],Rengar:['jungle','top'],Sejuani:['jungle'],Shaco:['jungle'],Shyvana:['jungle'],Skarner:['jungle'],Taliyah:['jungle','mid'],Talon:['jungle','mid'],Udyr:['jungle'],Vi:['jungle'],Viego:['jungle'],VoliBear:['top','jungle'],XinZhao:['jungle'],Zed:['mid','jungle'],
+  Ahri:['mid'],Akali:['mid','top'],Akshan:['mid','top'],Anivia:['mid'],Annie:['mid','support'],AurelionSol:['mid'],Azir:['mid'],Cassiopeia:['mid'],Diana:['mid','jungle'],Fizz:['mid'],Galio:['mid','support'],Heimerdinger:['mid','bot'],Katarina:['mid'],Leblanc:['mid'],Lissandra:['mid'],Lux:['mid','support'],Malzahar:['mid'],Kassadin:['mid'],Naafiri:['mid'],Neeko:['mid','support'],Orianna:['mid'],Qiyana:['mid'],Seraphine:['mid','support','bot'],Sylas:['mid'],Syndra:['mid'],TwistedFate:['mid'],Veigar:['mid','bot'],Vex:['mid'],Viktor:['mid'],Vladimir:['mid','top'],Xerath:['mid','support'],Zoe:['mid'],Ziggs:['mid','bot'],Hwei:['mid','support'],Mel:['mid'],Aurora:['top','mid'],
+  Aphelios:['bot'],Ashe:['bot','support'],Caitlyn:['bot'],Corki:['bot','mid'],Draven:['bot'],Ezreal:['bot'],Jhin:['bot'],Jinx:['bot'],KaiSa:['bot'],Kalista:['bot'],KogMaw:['bot'],Lucian:['bot','mid'],MissFortune:['bot'],Nilah:['bot'],Samira:['bot'],Sivir:['bot'],Smolder:['bot'],Tristana:['bot','mid'],Twitch:['bot'],Varus:['bot','mid'],Xayah:['bot'],Zeri:['bot'],
   Alistar:['support'],Bard:['support'],Blitzcrank:['support'],Brand:['support','mid'],Braum:['support'],Janna:['support'],Karma:['support','mid'],Leona:['support'],Lulu:['support'],Milio:['support'],Morgana:['support','mid'],Nami:['support'],Nautilus:['support'],Pyke:['support'],Rakan:['support'],Rell:['support'],Renata:['support'],Senna:['support','bot'],Sona:['support'],Soraka:['support'],Swain:['support','mid'],Tahm:['support','top'],Taric:['support'],Thresh:['support'],Vel:['support','mid'],Yuumi:['support'],Zilean:['support','mid'],Zyra:['support'],
 };
-const TAG_FALLBACK = {Fighter:['top'],Tank:['top','support'],Mage:['mid','support'],Assassin:['mid'],Marksman:['bot'],Support:['support']};
+const TAG_FALLBACK = {Fighter:['top'],Tank:['top','jungle'],Mage:['mid','support'],Assassin:['mid'],Marksman:['bot'],Support:['support']};
 function getChampionRoles(id, tags) {
   if (CHAMP_ROLES[id]) return CHAMP_ROLES[id];
   const clean = id.replace(/[^a-zA-Z]/g,'').toLowerCase();
@@ -672,6 +740,22 @@ function getChampionRoles(id, tags) {
   const roles = new Set();
   for (const t of tags) { const m=TAG_FALLBACK[t]; if(m) m.forEach(r=>roles.add(r)); }
   return roles.size>0?[...roles]:['top','jungle','mid','bot','support'];
+}
+
+/* ── Champion search ── */
+function onChampSearch() {
+  curSearch = document.getElementById('champ-search').value.trim();
+  const clearBtn = document.getElementById('champ-search-clear');
+  clearBtn.style.display = curSearch ? 'block' : 'none';
+  renderGrid();
+  updateStats();
+}
+function clearChampSearch() {
+  curSearch = '';
+  document.getElementById('champ-search').value = '';
+  document.getElementById('champ-search-clear').style.display = 'none';
+  renderGrid();
+  updateStats();
 }
 
 /* ── UI helpers ── */
@@ -688,11 +772,3 @@ document.getElementById('inp-name').addEventListener('input', e => {
   if (e.target.value.includes('#')) {
     const [n,t] = e.target.value.split('#');
     e.target.value = n;
-    document.getElementById('inp-tag').value = t||'';
-    document.getElementById('inp-tag').focus();
-  }
-});
-document.addEventListener('keydown', e => { if(e.key==='Escape'){ closeOptions(); closeSidebar(); } });
-</script>
-</body>
-</html>
