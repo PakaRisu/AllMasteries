@@ -3,16 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PFEmoji</title>
+    <title>PFEtudiants</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
@@ -22,377 +17,143 @@
             padding: 20px;
             gap: 20px;
         }
+        body.victory { background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); transition: background 0.5s ease; }
+        body.error   { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); transition: background 0.3s ease; }
 
-        body.victory {
-            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
-            transition: background 0.5s ease;
+        .nav-bar {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            background: white; border-radius: 50px; padding: 10px 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2); display: flex; gap: 10px; z-index: 2000;
         }
-
-        body.error {
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-            transition: background 0.3s ease;
+        .nav-bar a {
+            text-decoration: none; color: #2c3e50; padding: 8px 20px;
+            border-radius: 25px; font-weight: 600; transition: all 0.3s;
         }
+        .nav-bar a:hover { background: #f8f9fa; }
+        .nav-bar a.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
 
         .container {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 600px;
-            width: 100%;
-            flex-shrink: 0;
-            margin-top: 60px;
+            background: white; border-radius: 20px; padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-width: 600px; width: 100%; margin-top: 60px;
         }
+        h1 { text-align: center; color: #2c3e50; margin-bottom: 30px; font-size: 2em; }
 
-        h1 {
-            text-align: center;
-            color: #2c3e50;
-            margin-bottom: 30px;
-            font-size: 2em;
+        /* ── Mode toggle ───────────────────────────────────────── */
+        .mode-toggle { display: flex; justify-content: center; margin-bottom: 20px; }
+        .mode-toggle-inner {
+            display: flex; background: #f0f0f5; border-radius: 30px; padding: 4px; gap: 4px;
         }
+        .mode-btn {
+            padding: 8px 22px; border-radius: 25px; border: none;
+            font-size: 14px; font-weight: 600; cursor: pointer;
+            transition: all 0.25s ease; background: transparent; color: #6c757d; flex: none;
+        }
+        .mode-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; box-shadow: 0 3px 10px rgba(102, 126, 234, 0.4);
+        }
+        .mode-btn:hover:not(.active) { background: #e0e0ea; color: #2c3e50; transform: none; box-shadow: none; }
 
         .emoji-display {
-            background: #f8f9fa;
-            border: 3px solid #e9ecef;
-            border-radius: 15px;
-            padding: 30px;
-            text-align: center;
-            margin-bottom: 20px;
-            min-height: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: #f8f9fa; border: 3px solid #e9ecef; border-radius: 15px;
+            padding: 30px; text-align: center; margin-bottom: 20px;
+            min-height: 120px; display: flex; align-items: center; justify-content: center;
         }
+        .emoji-display span { font-size: 60px; margin: 0 8px; font-family: 'Apple Color Emoji', 'Segoe UI Emoji', sans-serif; }
 
-        .emoji-display span {
-            font-size: 60px;
-            margin: 0 8px;
-            font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'Android Emoji', sans-serif;
-        }
-
-        /* ── Score display ─────────────────────────────────────── */
         .score-display {
-            text-align: center;
-            color: #667eea;
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            padding: 10px;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-radius: 10px;
+            text-align: center; color: #667eea; font-size: 20px; font-weight: bold;
+            margin-bottom: 20px; padding: 10px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 10px;
         }
-
         .score-badge {
             display: inline-block;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 18px;
-            margin-left: 10px;
+            color: white; padding: 5px 15px; border-radius: 20px; font-size: 18px; margin-left: 10px;
         }
+        .attempts { text-align: center; color: #6c757d; font-size: 16px; margin-bottom: 20px; font-weight: 500; }
 
-        /* ── Mode toggle ───────────────────────────────────────── */
-        .mode-toggle {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
-        .mode-toggle-inner {
-            display: flex;
-            background: #f0f0f5;
-            border-radius: 30px;
-            padding: 4px;
-            gap: 4px;
-        }
-
-        .mode-btn {
-            padding: 8px 22px;
-            border-radius: 25px;
-            border: none;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            background: transparent;
-            color: #6c757d;
-            flex: none;
-        }
-
-        .mode-btn.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.4);
-        }
-
-        .mode-btn:hover:not(.active) {
-            background: #e0e0ea;
-            color: #2c3e50;
-            transform: none;
-            box-shadow: none;
-        }
-
-        /* ── Attempts ──────────────────────────────────────────── */
-        .attempts {
-            text-align: center;
-            color: #6c757d;
-            font-size: 16px;
-            margin-bottom: 20px;
-            font-weight: 500;
-        }
-
-        .input-container {
-            position: relative;
-            margin-bottom: 15px;
-        }
-
+        .input-container { position: relative; margin-bottom: 15px; }
         input[type="text"] {
-            width: 100%;
-            padding: 15px;
-            font-size: 16px;
-            border: 2px solid #dee2e6;
-            border-radius: 10px;
-            outline: none;
-            transition: border-color 0.3s;
+            width: 100%; padding: 15px; font-size: 16px;
+            border: 2px solid #dee2e6; border-radius: 10px; outline: none; transition: border-color 0.3s;
         }
-
-        input[type="text"]:focus {
-            border-color: #667eea;
-        }
+        input[type="text"]:focus { border-color: #667eea; }
 
         .suggestions {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            border: 2px solid #dee2e6;
-            border-top: none;
-            border-radius: 0 0 10px 10px;
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 1000;
-            display: none;
+            position: absolute; top: 100%; left: 0; right: 0; background: white;
+            border: 2px solid #dee2e6; border-top: none; border-radius: 0 0 10px 10px;
+            max-height: 200px; overflow-y: auto; z-index: 1000; display: none;
         }
-
-        .suggestions.show {
-            display: block;
-        }
-
-        .suggestion-item {
-            padding: 12px 15px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .suggestion-item:hover {
-            background-color: #f8f9fa;
-        }
-
-        .suggestion-item:active {
-            background-color: #e9ecef;
-        }
-
-        .button-container {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
+        .suggestions.show { display: block; }
+        .suggestion-item { padding: 12px 15px; cursor: pointer; transition: background-color 0.2s; }
+        .suggestion-item:hover { background-color: #f8f9fa; }
 
         .btn-submit, .btn-new {
-            flex: 1;
-            padding: 15px;
-            font-size: 16px;
-            font-weight: 600;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: transform 0.1s, box-shadow 0.3s;
+            flex: 1; padding: 15px; font-size: 16px; font-weight: 600;
+            border: none; border-radius: 10px; cursor: pointer; transition: transform 0.1s;
         }
+        .btn-submit:hover, .btn-new:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .btn-submit { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .btn-new    { background: #2ecc71; color: white; }
+        .button-container   { display: flex; gap: 10px; margin-bottom: 20px; }
+        .secondary-buttons  { display: flex; gap: 10px; justify-content: center; }
 
-        .btn-submit:hover, .btn-new:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .btn-submit:active, .btn-new:active {
-            transform: translateY(0);
-        }
-
-        .btn-submit {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .secondary-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-
-        .btn-new {
-            background: #2ecc71;
-            color: white;
-        }
-
-        /* ── History panel ─────────────────────────────────────── */
         .history-panel {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 600px;
-            width: 100%;
-            max-height: 300px;
-            overflow-y: auto;
+            background: white; border-radius: 20px; padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-width: 600px; width: 100%;
+            max-height: 300px; overflow-y: auto;
         }
-
-        .history-panel h3 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            font-size: 1.2em;
-            text-align: center;
-        }
-
-        .history-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-        }
-
+        .history-panel h3 { color: #2c3e50; margin-bottom: 20px; font-size: 1.2em; text-align: center; }
+        .history-list { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
         .history-item {
-            background: #f8f9fa;
-            padding: 10px 15px;
-            border-radius: 8px;
-            border-left: 4px solid #e74c3c;
-            color: #2c3e50;
-            font-size: 14px;
-            animation: slideIn 0.3s ease;
-            display: inline-block;
+            background: #f8f9fa; padding: 10px 15px; border-radius: 8px;
+            border-left: 4px solid #e74c3c; color: #2c3e50; font-size: 14px; animation: slideIn 0.3s ease;
         }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .history-empty { text-align: center; color: #95a5a6; font-style: italic; padding: 20px; width: 100%; }
 
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        .history-empty {
-            text-align: center;
-            color: #95a5a6;
-            font-style: italic;
-            padding: 20px;
-            width: 100%;
-        }
-
-        /* ── Victory banner ────────────────────────────────────── */
         .victory-message {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            text-align: center;
-            color: white;
-            z-index: 3000;
-            padding: 30px 20px;
-            background: rgba(46, 204, 113, 0.95);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            display: none; position: fixed; top: 0; left: 0; right: 0; text-align: center;
+            color: white; z-index: 3000; padding: 30px 20px;
+            background: rgba(46,204,113,0.95); box-shadow: 0 4px 20px rgba(0,0,0,0.3);
             animation: victorySlideDown 0.5s ease;
         }
+        .victory-message.show { display: block; }
+        .victory-message h2  { font-size: 3em; margin-bottom: 10px; text-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+        .victory-message p   { font-size: 1.3em; margin-bottom: 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        @keyframes victorySlideDown { 0% { transform: translateY(-100%); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
 
-        .victory-message.show {
-            display: block;
-        }
-
-        .victory-message h2 {
-            font-size: 3em;
-            margin-bottom: 10px;
-            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        .victory-message p {
-            font-size: 1.3em;
-            margin-bottom: 5px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        @keyframes victorySlideDown {
-            0%   { transform: translateY(-100%); opacity: 0; }
-            100% { transform: translateY(0);     opacity: 1; }
-        }
-
-        /* ── Nav ───────────────────────────────────────────────── */
-        .loading {
-            text-align: center;
-            color: white;
-            font-size: 1.5em;
-            margin-top: 60px;
-        }
-
-        .nav-bar {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: white;
-            border-radius: 50px;
-            padding: 10px 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-            display: flex;
-            gap: 10px;
-            z-index: 2000;
-        }
-
-        .nav-bar a {
-            text-decoration: none;
-            color: #2c3e50;
-            padding: 8px 20px;
-            border-radius: 25px;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .nav-bar a:hover { background: #f8f9fa; }
-
-        .nav-bar a.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
+        .loading { text-align: center; color: white; font-size: 1.5em; margin-top: 60px; }
 
         @media (max-width: 600px) {
             .container { padding: 20px; }
             h1 { font-size: 1.5em; }
             .emoji-display span { font-size: 45px; }
-            .history-panel { padding: 20px; }
         }
     </style>
 </head>
 <body>
     <div class="nav-bar">
-        <a href="index.html" class="active">PFEmoji</a>
-        <a href="pfetudiants.html">PFEtudiants</a>
+        <a href="index.html">PFEmoji</a>
+        <a href="pfetudiants.html" class="active">PFEtudiants</a>
     </div>
 
     <div class="loading" id="loading">Chargement des énigmes...</div>
 
-    <div class="container" style="display: none;" id="gameContainer">
-        <h1>PFEmoji</h1>
+    <div class="container" style="display:none;" id="gameContainer">
+        <h1>PFEtudiants</h1>
 
-        <!-- ① Mode toggle -->
+        <!-- Mode toggle -->
         <div class="mode-toggle">
             <div class="mode-toggle-inner">
-                <button class="mode-btn active" id="btnComplet" onclick="setMode('complet')">🗂 Complet (48)</button>
-                <button class="mode-btn"         id="btnRapide" onclick="setMode('rapide')">⚡ Rapide (10)</button>
+                <button class="mode-btn active" id="btnComplet" onclick="setMode('complet')">🗂 Complet</button>
+                <button class="mode-btn"         id="btnRapide"  onclick="setMode('rapide')">⚡ Rapide (10)</button>
             </div>
         </div>
 
-        <div class="emoji-display" id="emojiDisplay">
-            <span>❓</span>
-        </div>
+        <div class="emoji-display" id="emojiDisplay"><span>❓</span></div>
 
-        <!-- ② Score display (manquait dans le HTML original) -->
         <div class="score-display" id="scoreDisplay">
             Score : <span class="score-badge" id="scoreValue">0</span>
             <span style="margin-left: 20px; font-size: 16px; color: #6c757d;">
@@ -403,106 +164,60 @@
         <div class="attempts" id="attemptsCounter">Essais : 0</div>
 
         <div class="input-container">
-            <input
-                type="text"
-                id="answerInput"
-                placeholder="C'est évidemment le PFE de ..."
-                autocomplete="off"
-            >
+            <input type="text" id="answerInput" placeholder="C'est évidemment..." autocomplete="off">
             <div class="suggestions" id="suggestionsBox"></div>
         </div>
-
-        <div class="button-container">
-            <button class="btn-submit" onclick="checkAnswer()">Valider</button>
-        </div>
-
-        <div class="secondary-buttons">
-            <button class="btn-new" onclick="newEnigme()">Un autre !</button>
-        </div>
+        <div class="button-container"><button class="btn-submit" onclick="checkAnswer()">Valider</button></div>
+        <div class="secondary-buttons"><button class="btn-new" onclick="newEnigme()">Un autre !</button></div>
     </div>
 
-    <div class="history-panel" style="display: none;" id="historyPanel">
-        <h3>Ce n'est pas le PFE de...</h3>
-        <div class="history-list" id="historyList">
-            <div class="history-empty">Aucune tentative</div>
-        </div>
+    <div class="history-panel" style="display:none;" id="historyPanel">
+        <h3>Ce n'est pas...</h3>
+        <div class="history-list" id="historyList"><div class="history-empty">Aucune tentative</div></div>
     </div>
 
     <div class="victory-message" id="victoryMessage">
-        <h2>🎉</h2>
-        <p id="victoryText"></p>
-        <p id="victoryAttempts"></p>
+        <h2>🎉</h2><p id="victoryText"></p><p id="victoryAttempts"></p>
     </div>
 
     <script>
-        /* ───────────────────────────────────────────────────────
-           State
-        ─────────────────────────────────────────────────────── */
-        let enigmes      = [];   // toutes les énigmes chargées
-        let activePool   = [];   // pool actif selon le mode (complet = toutes, rapide = 10 aléatoires)
+        /* ── State ────────────────────────────────────────────── */
+        let enigmes       = [];
+        let activePool    = [];
         let currentEnigme = null;
-        let revealed     = 0;
-        let attempts     = 0;
-        let allAnswers   = [];
-        let guessHistory = [];
+        let revealed      = 0;
+        let attempts      = 0;
+        let allAnswers    = [];
+        let guessHistory  = [];
         let playedEnigmes = [];
-        let totalScore   = 0;
-        let currentMode  = 'complet'; // 'complet' | 'rapide'
+        let totalScore    = 0;
+        let currentMode   = 'complet';
 
         const QUICK_COUNT = 10;
 
-        /* ───────────────────────────────────────────────────────
-           Placeholders
-        ─────────────────────────────────────────────────────── */
+        /* ── Placeholders ─────────────────────────────────────── */
         const placeholderMessages = [
-            "C'est évidemment le PFE de...",
-            "Ah, plutôt le PFE de...",
-            "Alors peut-être celui de...",
-            "Ah non mince, bon bah c'est...",
-            "Allez, cette fois c'est...",
-            "Bon, bah...",
-            "Hmm... Le PFE de...",
-            "Attends ! C'est...",
-            "Je dirais...",
-            "Ça doit être...",
-            "Ça DOIT être...",
-            "Je pense c'est...",
-            "...",
-            "Ça pourrait être...",
-            "MDR MAIS PAS DU TOUT"
+            "C'est évidemment...","Ah, plutôt...","Alors peut-être...",
+            "Ah non mince, bon bah c'est...","Allez, cette fois c'est...",
+            "Bon, ...","Hmm...","...","Je dirais...","Ça doit être...",
+            "Peut-être bien...","Je pense à...","Essayons avec...",
+            "Ça pourrait être...","..."
         ];
-
         function updatePlaceholder() {
-            const input = document.getElementById('answerInput');
             const idx = attempts >= 14 ? 14 : Math.min(attempts, placeholderMessages.length - 2);
-            input.placeholder = placeholderMessages[idx];
+            document.getElementById('answerInput').placeholder = placeholderMessages[idx];
         }
 
-        /* ───────────────────────────────────────────────────────
-           Score
-        ─────────────────────────────────────────────────────── */
-        function calculateScore(attemptsUsed, totalEmojis) {
-            if (attemptsUsed === 1) return 100 + (totalEmojis * 50);
-            return Math.max(0, 100 - (attemptsUsed - 1) * 20);
-        }
-
+        /* ── Score ────────────────────────────────────────────── */
+        function calculateScore(a, t) { return a === 1 ? 100 + (t * 50) : Math.max(0, 100 - (a - 1) * 20); }
         function updateScoreDisplay() {
-            document.getElementById('scoreValue').textContent     = totalScore;
-            // resolvedCount = énigmes terminées dans ce tour (playedEnigmes inclut la courante)
-            const resolved = Math.max(0, playedEnigmes.length - 1);
-            document.getElementById('resolvedCount').textContent  = resolved;
-            document.getElementById('totalCount').textContent     = activePool.length;
+            document.getElementById('scoreValue').textContent    = totalScore;
+            document.getElementById('resolvedCount').textContent = Math.max(0, playedEnigmes.length - 1);
+            document.getElementById('totalCount').textContent    = activePool.length;
         }
 
-        /* ───────────────────────────────────────────────────────
-           Helpers
-        ─────────────────────────────────────────────────────── */
-        function normalize(str) {
-            return str.trim().toLowerCase()
-                .normalize("NFD")
-                .replace(/[\u0300-\u036f]/g, "");
-        }
-
+        /* ── Helpers ──────────────────────────────────────────── */
+        function normalize(s) { return s.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""); }
         function shuffle(arr) {
             const a = [...arr];
             for (let i = a.length - 1; i > 0; i--) {
@@ -512,30 +227,24 @@
             return a;
         }
 
-        /* ───────────────────────────────────────────────────────
-           Mode toggle
-        ─────────────────────────────────────────────────────── */
+        /* ── Mode toggle ──────────────────────────────────────── */
         function setMode(mode) {
             if (mode === currentMode) return;
             currentMode = mode;
-
             document.getElementById('btnComplet').classList.toggle('active', mode === 'complet');
-            document.getElementById('btnRapide').classList.toggle('active', mode === 'rapide');
-
-            // Rebuild pool and restart session
+            document.getElementById('btnRapide').classList.toggle('active',  mode === 'rapide');
+            // Update label for "Complet" to show total count once enigmas are loaded
+            if (enigmes.length > 0) {
+                document.getElementById('btnComplet').textContent = `🗂 Complet (${enigmes.length})`;
+            }
             startSession();
         }
 
         function buildPool() {
-            if (currentMode === 'rapide') {
-                return shuffle(enigmes).slice(0, QUICK_COUNT);
-            }
-            return [...enigmes];
+            return currentMode === 'rapide' ? shuffle(enigmes).slice(0, QUICK_COUNT) : [...enigmes];
         }
 
-        /* ───────────────────────────────────────────────────────
-           Session / game init
-        ─────────────────────────────────────────────────────── */
+        /* ── Session ──────────────────────────────────────────── */
         function startSession() {
             activePool    = buildPool();
             playedEnigmes = [];
@@ -546,32 +255,34 @@
 
         async function loadEnigmes() {
             try {
-                const response = await fetch('/api/enigmes');
-                if (!response.ok) throw new Error('Erreur de chargement');
-                enigmes    = await response.json();
+                const r = await fetch('/api/etudiants');
+                if (!r.ok) throw new Error(`HTTP error! status: ${r.status}`);
+                enigmes    = await r.json();
                 allAnswers = enigmes.map(e => e.reponse);
 
-                document.getElementById('loading').style.display = 'none';
+                document.getElementById('loading').style.display      = 'none';
                 document.getElementById('gameContainer').style.display = 'block';
-                document.getElementById('historyPanel').style.display = 'block';
+                document.getElementById('historyPanel').style.display  = 'block';
+
+                // Show actual count on Complet button
+                document.getElementById('btnComplet').textContent = `🗂 Complet (${enigmes.length})`;
 
                 startSession();
-            } catch (error) {
-                console.error('Erreur:', error);
-                document.getElementById('loading').textContent = '⚠️ Erreur de chargement des énigmes';
+            } catch (e) {
+                console.error(e);
+                document.getElementById('loading').innerHTML = '⚠️ Erreur de chargement';
             }
         }
 
         function newEnigme() {
             if (activePool.length === 0) return;
 
-            // All enigmas in pool played → show final score and restart session
             if (playedEnigmes.length >= activePool.length) {
                 const finalScore = totalScore;
                 const label = currentMode === 'rapide'
                     ? `Mode Rapide (${QUICK_COUNT} énigmes)`
                     : `Mode Complet (${enigmes.length} énigmes)`;
-                alert(`🎉 Vous avez terminé toutes les énigmes !\n${label}\n\nScore final : ${finalScore} points\n\nOn recommence !`);
+                alert(`🎉 Vous avez terminé toutes les énigmes !\n${label}\n\nScore final : ${finalScore} points\n\nBravo la tcheam`);
                 startSession();
                 return;
             }
@@ -579,12 +290,8 @@
             document.body.classList.remove('victory');
             document.getElementById('victoryMessage').classList.remove('show');
 
-            // Pick an unplayed enigma from the active pool
-            const available = activePool.filter(e =>
-                !playedEnigmes.some(p => p.reponse === e.reponse)
-            );
-
-            currentEnigme = available[Math.floor(Math.random() * available.length)];
+            const available   = activePool.filter(e => !playedEnigmes.some(p => p.reponse === e.reponse));
+            currentEnigme     = available[Math.floor(Math.random() * available.length)];
             playedEnigmes.push(currentEnigme);
 
             revealed     = 1;
@@ -600,70 +307,53 @@
             hideSuggestions();
         }
 
-        /* ───────────────────────────────────────────────────────
-           Display helpers
-        ─────────────────────────────────────────────────────── */
+        /* ── Display ──────────────────────────────────────────── */
         function updateDisplay() {
-            const display = document.getElementById('emojiDisplay');
-            const emojis  = currentEnigme.emojis;
-            const shown   = emojis.slice(0, revealed).map(e => `<span>${e}</span>`).join('');
-            const hidden  = Array(emojis.length - revealed).fill('<span>❓</span>').join('');
-            display.innerHTML = shown + hidden;
+            const e      = currentEnigme.emojis;
+            const shown  = e.slice(0, revealed).map(x => `<span>${x}</span>`).join('');
+            const hidden = Array(e.length - revealed).fill('<span>❓</span>').join('');
+            document.getElementById('emojiDisplay').innerHTML = shown + hidden;
             document.getElementById('attemptsCounter').textContent = `Essais : ${attempts}`;
         }
-
         function updateHistoryDisplay() {
-            const historyList = document.getElementById('historyList');
-            if (guessHistory.length === 0) {
-                historyList.innerHTML = '<div class="history-empty">Aucune tentative</div>';
-            } else {
-                historyList.innerHTML = guessHistory
-                    .map(guess => `<div class="history-item">${guess}</div>`)
-                    .join('');
-            }
+            const h = document.getElementById('historyList');
+            h.innerHTML = guessHistory.length === 0
+                ? '<div class="history-empty">Aucune tentative</div>'
+                : guessHistory.map(g => `<div class="history-item">${g}</div>`).join('');
         }
 
-        /* ───────────────────────────────────────────────────────
-           Answer checking
-        ─────────────────────────────────────────────────────── */
+        /* ── Answer ───────────────────────────────────────────── */
         function checkAnswer() {
             const input = document.getElementById('answerInput');
-            let userAnswer = input.value.trim();
-            if (!userAnswer) return;
+            let ans = input.value.trim();
+            if (!ans) return;
 
-            const typed   = normalize(userAnswer);
-            const matches = allAnswers.filter(ans => normalize(ans).startsWith(typed));
+            const typed   = normalize(ans);
+            const matches = allAnswers.filter(a => normalize(a).startsWith(typed));
+            if (matches.length === 1) { ans = matches[0]; input.value = ans; }
 
-            if (matches.length === 1) {
-                userAnswer    = matches[0];
-                input.value   = userAnswer;
+            const isValid = allAnswers.some(a => normalize(a) === normalize(ans));
+            if (!isValid) {
+                input.style.borderColor = '#e74c3c';
+                setTimeout(() => input.style.borderColor = '#dee2e6', 500);
+                return;
             }
 
             attempts++;
             updatePlaceholder();
 
-            if (normalize(userAnswer) === normalize(currentEnigme.reponse)) {
-                // ✅ Correct
-                const display = document.getElementById('emojiDisplay');
-                display.innerHTML = currentEnigme.emojis.map(e => `<span>${e}</span>`).join('');
+            if (normalize(ans) === normalize(currentEnigme.reponse)) {
+                document.getElementById('emojiDisplay').innerHTML = currentEnigme.emojis.map(e => `<span>${e}</span>`).join('');
                 document.getElementById('attemptsCounter').textContent = `Essais : ${attempts}`;
-
-                const roundScore = calculateScore(attempts, currentEnigme.emojis.length);
-                totalScore += roundScore;
+                const score = calculateScore(attempts, currentEnigme.emojis.length);
+                totalScore += score;
                 updateScoreDisplay();
-
                 hideSuggestions();
-                showVictory(roundScore);   // ③ passage du score corrigé
+                showVictory(score);
             } else {
-                // ❌ Wrong
-                if (!guessHistory.includes(userAnswer)) {
-                    guessHistory.push(userAnswer);
-                    updateHistoryDisplay();
-                }
-
+                if (!guessHistory.includes(ans)) { guessHistory.push(ans); updateHistoryDisplay(); }
                 document.body.classList.add('error');
                 setTimeout(() => document.body.classList.remove('error'), 500);
-
                 if (revealed < currentEnigme.emojis.length) revealed++;
                 updateDisplay();
                 input.value = '';
@@ -671,62 +361,35 @@
             }
         }
 
-        /* ───────────────────────────────────────────────────────
-           Suggestions
-        ─────────────────────────────────────────────────────── */
+        /* ── Suggestions ──────────────────────────────────────── */
         function showSuggestions() {
-            const input       = document.getElementById('answerInput');
-            const typed       = normalize(input.value);
-            const suggestionsBox = document.getElementById('suggestionsBox');
-
+            const input = document.getElementById('answerInput');
+            const typed = normalize(input.value);
+            const box   = document.getElementById('suggestionsBox');
             if (!typed) { hideSuggestions(); return; }
-
-            const matches = allAnswers.filter(ans =>
-                normalize(ans).startsWith(typed) && !guessHistory.includes(ans)
-            );
-
+            const matches = allAnswers.filter(a => normalize(a).startsWith(typed) && !guessHistory.includes(a));
             if (matches.length === 0) { hideSuggestions(); return; }
-
-            suggestionsBox.innerHTML = matches.map(ans =>
-                `<div class="suggestion-item" onclick="selectSuggestion('${ans.replace(/'/g, "\\'")}')">${ans}</div>`
+            box.innerHTML = matches.map(a =>
+                `<div class="suggestion-item" onclick="selectSuggestion('${a.replace(/'/g, "\\'")}'">${a}</div>`
             ).join('');
-
-            suggestionsBox.classList.add('show');
+            box.classList.add('show');
         }
+        function hideSuggestions()     { document.getElementById('suggestionsBox').classList.remove('show'); }
+        function selectSuggestion(a)   { document.getElementById('answerInput').value = a; hideSuggestions(); document.getElementById('answerInput').focus(); }
 
-        function hideSuggestions() {
-            document.getElementById('suggestionsBox').classList.remove('show');
-        }
-
-        function selectSuggestion(answer) {
-            document.getElementById('answerInput').value = answer;
-            hideSuggestions();
-            document.getElementById('answerInput').focus();
-        }
-
-        /* ───────────────────────────────────────────────────────
-           Victory
-        ─────────────────────────────────────────────────────── */
-        function showVictory(roundScore) {
+        /* ── Victory ──────────────────────────────────────────── */
+        function showVictory(s) {
             document.body.classList.add('victory');
-            const victoryMsg = document.getElementById('victoryMessage');
-            document.getElementById('victoryText').textContent     = `Bravo ! C'était bien le PFE de ${currentEnigme.reponse}`;
-            document.getElementById('victoryAttempts').textContent = `Trouvé en ${attempts} coup(s) ! +${roundScore} points 🎯`;
-            victoryMsg.classList.add('show');
+            document.getElementById('victoryText').textContent     = `Bravo ! C'était bien ${currentEnigme.reponse}`;
+            document.getElementById('victoryAttempts').textContent = `Trouvé en ${attempts} coup(s) ! +${s} points 🎯`;
+            document.getElementById('victoryMessage').classList.add('show');
         }
 
-        /* ───────────────────────────────────────────────────────
-           Events
-        ─────────────────────────────────────────────────────── */
-        document.getElementById('answerInput').addEventListener('input', showSuggestions);
-        document.getElementById('answerInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') checkAnswer();
-        });
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.input-container')) hideSuggestions();
-        });
+        /* ── Events ───────────────────────────────────────────── */
+        document.getElementById('answerInput').addEventListener('input',    showSuggestions);
+        document.getElementById('answerInput').addEventListener('keypress', e => { if (e.key === 'Enter') checkAnswer(); });
+        document.addEventListener('click', e => { if (!e.target.closest('.input-container')) hideSuggestions(); });
 
-        // Boot
         loadEnigmes();
     </script>
 </body>
